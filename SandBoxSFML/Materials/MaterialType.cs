@@ -1,0 +1,7 @@
+﻿namespace SandBoxSFML.Materials
+{
+    public enum MaterialType
+    {
+        Empty, Sand
+    }
+}
