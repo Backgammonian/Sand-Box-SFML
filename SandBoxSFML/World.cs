@@ -103,6 +103,7 @@ namespace SandBoxSFML
                 switch (SelectedMaterial)
                 {
                     case MaterialType.Sand:
+                    case MaterialType.Water:
                         AddMaterialToWorld(_mouseX, _mouseY);
                         break;
                 }
@@ -147,8 +148,6 @@ namespace SandBoxSFML
 
                 _matrix.Add(SelectedMaterial, position, velocity);
             }
-
-            System.Diagnostics.Debug.WriteLine("(AddMaterialToWorld) " + SelectedMaterial);
         }
 
         private void EraseMaterial(int x, int y)
@@ -175,8 +174,6 @@ namespace SandBoxSFML
         public void SetMaterial(MaterialType material)
         {
             SelectedMaterial = material;
-
-            System.Diagnostics.Debug.WriteLine("(World) " + SelectedMaterial);
         }
 
         public void SetRadius(float radius)

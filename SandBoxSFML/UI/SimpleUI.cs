@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using SFML.Window;
+using System.Linq;
 using SFML.System;
 using SFML.Graphics;
 using SandBoxSFML.Materials;
@@ -93,6 +92,15 @@ namespace SandBoxSFML.UI
         public void SetMaterial(MaterialType material)
         {
             SelectedMaterial = material;
+            for (int i = 0; i < _materialButtons.Count; i++)
+            {
+                _materialButtons[i].Unselect();
+            }
+
+            var button = _materialButtons.Single(button => button.AssignedMaterial == SelectedMaterial);
+            button.Select();
+            _previousButtonIndex = _materialButtons.IndexOf(button);
+            _selectedButtonIndex = _materialButtons.IndexOf(button);
         }
 
         public void SetRadius(float radius)

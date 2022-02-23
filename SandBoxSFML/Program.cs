@@ -110,7 +110,7 @@ namespace SandBoxSFML
 
         private static void OnKeyPressed(object sender, KeyEventArgs e)
         {
-            if (e.Code == SFML.Window.Keyboard.Key.Escape)
+            if (e.Code == Keyboard.Key.Escape)
             {
                 Window.Close();
             }
