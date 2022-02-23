@@ -12,6 +12,7 @@ namespace SandBoxSFML.Materials
             _colors = new Dictionary<MaterialType, Color>();
             _colors.Add(MaterialType.Empty, Color.Black);
             _colors.Add(MaterialType.Sand, new Color(194, 178, 128));
+            _colors.Add(MaterialType.Water, new Color(35, 137, 218));
         }
 
         public static Color GetColor(MaterialType type)

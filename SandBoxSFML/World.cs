@@ -10,10 +10,11 @@ namespace SandBoxSFML
     {
         private readonly ImageArray _canvas;
         private readonly CellularMatrix _matrix;
-        private MaterialType _selectedMaterial;
-        private int _selectionRadius;
+        private float _selectionRadius;
         private DateTime _lastTime;
         private long _framesRendered;
+        private int _mouseX, _mouseY;
+        private Mouse.Button _mouseButton;
 
         public World(int width, int height)
         {
@@ -28,37 +29,27 @@ namespace SandBoxSFML
             Sprite.Texture = _canvas.Bitmap;
 
             Clear();
-        }
 
-        public event EventHandler<EventArgs> MaterialChanged;
-        public event EventHandler<EventArgs> SelectionRadiusChanged;
+            IsUsed = false;
+        }
 
         public int Width { get; }
         public int Height { get; }
         public long FPS { get; private set; }
         public Sprite Sprite { get; }
+        public bool IsUsed { get; private set; }
 
-        public MaterialType SelectedMaterial
-        {
-            get => _selectedMaterial;
-            private set
-            {
-                _selectedMaterial = value;
+        public MaterialType SelectedMaterial { get; private set; }
 
-                MaterialChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public int SelectionRadius
+        public float SelectionRadius
         {
             get => _selectionRadius;
             private set
             {
-                if (value > 0)
+                if (value > 0 &&
+                    value <= Constants.MaxRadius)
                 {
                     _selectionRadius = value;
-
-                    SelectionRadiusChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -86,24 +77,47 @@ namespace SandBoxSFML
             CountFPS();
         }
 
+        public void StartInput(Mouse.Button button, int x, int y)
+        {
+            IsUsed = true;
+
+            _mouseButton = button;
+            _mouseX = x;
+            _mouseY = y;
+        }
+
+        public void StopInput()
+        {
+            IsUsed = false;
+        }
+
         private void Input()
         {
-            var position = Mouse.GetPosition(Program.Window);
+            if (!IsUsed)
+            {
+                return;
+            }
 
-            if (Mouse.IsButtonPressed(Mouse.Button.Left))
+            if (_mouseButton == Mouse.Button.Left)
             {
                 switch (SelectedMaterial)
                 {
                     case MaterialType.Sand:
-                        AddMaterialToWorld(position);
+                        AddMaterialToWorld(_mouseX, _mouseY);
                         break;
                 }
             }
-
-            if (Mouse.IsButtonPressed(Mouse.Button.Right))
+            
+            if (_mouseButton == Mouse.Button.Right)
             {
-                EraseMaterial(position);
+                EraseMaterial(_mouseX, _mouseY);
             }
+        }
+
+        public void UpdateMousePosition(int x, int y)
+        {
+            _mouseX = x;
+            _mouseY = y;
         }
 
         private void CountFPS()
@@ -117,9 +131,9 @@ namespace SandBoxSFML
             }
         }
 
-        private void AddMaterialToWorld(Vector2i mousePosition)
+        private void AddMaterialToWorld(int x, int y)
         {
-            var count = Utils.RandomValue(1, 100);
+            var count = Utils.RandomValue(1, 1000);
             for (int i = 0; i < count; i++)
             {
                 var r = SelectionRadius * Utils.NextDouble();
@@ -127,25 +141,27 @@ namespace SandBoxSFML
                 var rx = Math.Cos(theta) * r;
                 var ry = Math.Sin(theta) * r;
 
-                var position = new Point(mousePosition.X + (int)rx, mousePosition.Y + (int)ry);
+                var position = new Point(x + (int)rx, y + (int)ry);
                 var deviation = Utils.Next(0, 100) > 50 ? -1 : 1;
                 var velocity = new Vector2i(deviation, Utils.RandomValue(-2, 5));
 
                 _matrix.Add(SelectedMaterial, position, velocity);
             }
+
+            System.Diagnostics.Debug.WriteLine("(AddMaterialToWorld) " + SelectedMaterial);
         }
 
-        private void EraseMaterial(Vector2i mousePosition)
+        private void EraseMaterial(int x, int y)
         {
-            var R = SelectionRadius;
+            var R = (int)SelectionRadius;
             for (var i = -R; i < R; i++)
             {
                 for (var j = -R; j < R; j++)
                 {
-                    var rx = mousePosition.X + i;
-                    var ry = mousePosition.Y + j;
+                    var rx = x + i;
+                    var ry = y + j;
                     var r = new Vector2i(rx, ry);
-                    var origin = new Vector2i(mousePosition.X, mousePosition.Y);
+                    var origin = new Vector2i(x, y);
                     var l = new Vector2i(origin.X - r.X, origin.Y - r.Y);
 
                     if ((l.X * l.X + l.Y + l.Y) <= R * R)
@@ -159,9 +175,11 @@ namespace SandBoxSFML
         public void SetMaterial(MaterialType material)
         {
             SelectedMaterial = material;
+
+            System.Diagnostics.Debug.WriteLine("(World) " + SelectedMaterial);
         }
 
-        public void SetRadius(int radius)
+        public void SetRadius(float radius)
         {
             SelectionRadius = radius;
         }

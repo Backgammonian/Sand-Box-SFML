@@ -5,5 +5,6 @@ namespace SandBoxSFML
     public class Constants
     {
         public static readonly Vector2i Gravity = new Vector2i(0, 1);
+        public const int MaxRadius = 100;
     }
 }

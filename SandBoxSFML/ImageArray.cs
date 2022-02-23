@@ -21,7 +21,6 @@ namespace SandBoxSFML
         public void SetPixel(int x, int y, Color color)
         {
             var index = (x * 4) + (y * Width * 4);
-            //var index = x + (y * Width);
             Array[index] = color.R;
             Array[index + 1] = color.G;
             Array[index + 2] = color.B;
@@ -31,7 +30,6 @@ namespace SandBoxSFML
         public Color GetPixel(int x, int y)
         {
             var index = (x * 4) + (y * Width * 4);
-            //var index = x + (y * Width);
             var r = Array[index];
             var g = Array[index + 1];
             var b = Array[index + 2];

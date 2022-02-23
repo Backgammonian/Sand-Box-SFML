@@ -20,6 +20,11 @@ namespace SandBoxSFML.Materials
                     IsMovable = true;
                     break;
 
+                case MaterialType.Water:
+                    Velocity = new Vector2i(Constants.Gravity.X, Constants.Gravity.Y);
+                    IsMovable = true;
+                    break;
+
                 case MaterialType.Empty:
                     break;
             }
@@ -42,6 +47,11 @@ namespace SandBoxSFML.Materials
                     IsMovable = true;
                     break;
 
+                case MaterialType.Water:
+                    Velocity = new Vector2i(Constants.Gravity.X, Constants.Gravity.Y);
+                    IsMovable = true;
+                    break;
+
                 case MaterialType.Empty:
                     break;
             }
@@ -60,27 +70,50 @@ namespace SandBoxSFML.Materials
                     break;
 
                 case MaterialType.Sand:
+                {
+                    Velocity = new Vector2i(Utils.Clamp(Velocity.X + Constants.Gravity.X, -10, 10), Utils.Clamp(Velocity.Y + Constants.Gravity.Y, -10, 10));
+
+                    var vX = i + Velocity.X;
+                    var vY = j + Velocity.Y;
+
+                    var random = Utils.Next(0, 100);
+                    var direction = random < 33 ? Direction.Right : random > 66 ? Direction.Left : Direction.None;
+                    var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
+
+                    if (matrix.IsFree(vX, vY))
                     {
-                        Velocity = new Vector2i(Utils.Clamp(Velocity.X + Constants.Gravity.X, -10, 10), Utils.Clamp(Velocity.Y + Constants.Gravity.Y, -10, 10));
-
-                        var vX = i + Velocity.X;
-                        var vY = j + Velocity.Y;
-
-                        var random = Utils.Next(0, 100);
-                        var direction = random < 33 ? Direction.Right : random > 66 ? Direction.Left : Direction.None;
-                        var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
-
-                        if (matrix.IsFree(vX, vY))
-                        {
-                            matrix.Swap(vX, vY, i, j);
-                        }
-                        else
-                        if (matrix.IsFree(cellBelow.X, cellBelow.Y))
-                        {
-                            matrix.Swap(cellBelow.X, cellBelow.Y, i, j);
-                        }
+                        matrix.Swap(vX, vY, i, j);
                     }
-                    break;
+                    else
+                    if (matrix.IsFree(cellBelow.X, cellBelow.Y))
+                    {
+                        matrix.Swap(cellBelow.X, cellBelow.Y, i, j);
+                    }
+                }
+                break;
+
+                case MaterialType.Water:
+                {
+                    Velocity = new Vector2i(Utils.Clamp(Velocity.X + Constants.Gravity.X, -10, 10), Utils.Clamp(Velocity.Y + Constants.Gravity.Y, -10, 10));
+
+                    var vX = i + Velocity.X;
+                    var vY = j + Velocity.Y;
+
+                    var random = Utils.Next(0, 100);
+                    var direction = random < 33 ? Direction.Right : random > 66 ? Direction.Left : Direction.None;
+                    var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
+
+                    if (matrix.IsFree(vX, vY))
+                    {
+                        matrix.Swap(vX, vY, i, j);
+                    }
+                    else
+                    if (matrix.IsFree(cellBelow.X, cellBelow.Y))
+                    {
+                        matrix.Swap(cellBelow.X, cellBelow.Y, i, j);
+                    }
+                }
+                break;
             }
 
             IsUpdatedThisFrame = true;

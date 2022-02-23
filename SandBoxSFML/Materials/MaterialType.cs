@@ -2,6 +2,6 @@
 {
     public enum MaterialType
     {
-        Empty, Sand
+        Empty, Sand, Water
     }
 }
