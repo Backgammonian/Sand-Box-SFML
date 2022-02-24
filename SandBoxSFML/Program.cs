@@ -9,8 +9,8 @@ namespace SandBoxSFML
 {
     class Program
     {
-        private const int _width = 800;
-        private const int _height = 600;
+        private static uint _width;
+        private static uint _height;
         private static World _world;
         private static SimpleUI _ui;
         private static float _delta;
@@ -19,10 +19,23 @@ namespace SandBoxSFML
         public static RenderWindow Window { get; private set; }
 
         private static void Main(string[] args)
-        {          
-            _world = new World(_width, _height);
+        {   
+            if (args.Length == 2 &&
+                uint.TryParse(args[0], out uint width) &&
+                uint.TryParse(args[1], out uint height))
+            {
+                _width = width;
+                _height = height;
+            }
+            else
+            {
+                _width = 800;
+                _height = 600;
+            }
 
-            _ui = new SimpleUI(new Vector2f(750, 10), new Vector2f(40, 200), new Color(255, 255, 255, 128));
+            _world = new World((int)_width, (int)_height);
+
+            _ui = new SimpleUI(new Vector2f(_width - 50, 10), new Vector2f(40, 200), new Color(255, 255, 255, 128));
             _ui.MaterialChanged += OnUIMaterialChanged;
             _ui.SelectionRadiusChanged += OnUISelectionRadiusChanged;
 

@@ -53,6 +53,11 @@ namespace SandBoxSFML
             return IsWithihBounds(i, j) && IsFree(_matrix[i, j]);
         }
 
+        public bool IsLiquid(int i, int j)
+        {
+            return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Water);
+        }
+
         public void Swap(int i1, int j1, int i2, int j2)
         {
             var t = _matrix[i1, j1];
@@ -63,11 +68,13 @@ namespace SandBoxSFML
             MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i2, j2, _matrix[i2, j2].Color));
         }
 
-        public void StepAll()
+        public void StepAll(long framesCount)
         {
+            var r = (framesCount % 2) == 0;
+
             for (int j = Height - 1; j >= 0; j--)
             {
-                for (int i = 0; i < Width; i++)
+                for (int i = r ? 0 : Width - 1; r ? i < Width : i >= 0; i += r ? 1 : -1)
                 {
                     _matrix[i, j].Step(this, i, j);
                 }
@@ -103,11 +110,13 @@ namespace SandBoxSFML
             }
         }
 
-        public void ToggleFrameUpdate()
+        public void ToggleFrameUpdate(long framesCount)
         {
-            for (int i = 0; i < Width; i++)
+            var r = (framesCount % 2) == 0;
+
+            for (int j = Height - 1; j >= 0; j--)
             {
-                for (int j = 0; j < Height; j++)
+                for (int i = r ? 0 : Width - 1; r ? i < Width : i >= 0; i += r ? 1 : -1)
                 {
                     _matrix[i, j].IsUpdatedThisFrame = false;
                 }

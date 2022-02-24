@@ -12,6 +12,8 @@ namespace SandBoxSFML.Materials
             Velocity = new Vector2i(0, 0);
             IsUpdatedThisFrame = false;
             IsMovable = false;
+            SpreadRate = 0;
+            FallRate = 0;
 
             switch (Type)
             {
@@ -23,6 +25,8 @@ namespace SandBoxSFML.Materials
                 case MaterialType.Water:
                     Velocity = new Vector2i(Constants.Gravity.X, Constants.Gravity.Y);
                     IsMovable = true;
+                    SpreadRate = 5;
+                    FallRate = 2;
                     break;
 
                 case MaterialType.Empty:
@@ -35,6 +39,8 @@ namespace SandBoxSFML.Materials
         public Vector2i Velocity { get; set; }
         public bool IsUpdatedThisFrame { get; set; }
         public bool IsMovable { get; private set; }
+        public int SpreadRate { get; private set; }
+        public int FallRate { get; private set; }
 
         public void ChangeType(MaterialType newType)
         {
@@ -45,11 +51,15 @@ namespace SandBoxSFML.Materials
                 case MaterialType.Sand:
                     Velocity = new Vector2i(Constants.Gravity.X, Constants.Gravity.Y);
                     IsMovable = true;
+                    SpreadRate = 0;
+                    FallRate = 0;
                     break;
 
                 case MaterialType.Water:
                     Velocity = new Vector2i(Constants.Gravity.X, Constants.Gravity.Y);
                     IsMovable = true;
+                    SpreadRate = 5;
+                    FallRate = 2;
                     break;
 
                 case MaterialType.Empty:
@@ -64,6 +74,11 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
+            if (IsMovable)
+            {
+                Velocity = new Vector2i((int)(Utils.Clamp(Velocity.X + Constants.Gravity.X, -10, 10) * 1.0), Utils.Clamp(Velocity.Y + Constants.Gravity.Y, -10, 10));
+            }
+
             switch (Type)
             {
                 case MaterialType.Empty:
@@ -71,8 +86,6 @@ namespace SandBoxSFML.Materials
 
                 case MaterialType.Sand:
                 {
-                    Velocity = new Vector2i(Utils.Clamp(Velocity.X + Constants.Gravity.X, -10, 10), Utils.Clamp(Velocity.Y + Constants.Gravity.Y, -10, 10));
-
                     var vX = i + Velocity.X;
                     var vY = j + Velocity.Y;
 
@@ -94,8 +107,6 @@ namespace SandBoxSFML.Materials
 
                 case MaterialType.Water:
                 {
-                    Velocity = new Vector2i(Utils.Clamp(Velocity.X + Constants.Gravity.X, -10, 10), Utils.Clamp(Velocity.Y + Constants.Gravity.Y, -10, 10));
-
                     var vX = i + Velocity.X;
                     var vY = j + Velocity.Y;
 

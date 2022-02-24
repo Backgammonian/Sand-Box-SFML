@@ -69,8 +69,8 @@ namespace SandBoxSFML
         {
             Input();
 
-            _matrix.StepAll();
-            _matrix.ToggleFrameUpdate();
+            _matrix.StepAll(_framesRendered);
+            _matrix.ToggleFrameUpdate(_framesRendered);
 
             _canvas.Update();
 
@@ -98,15 +98,10 @@ namespace SandBoxSFML
                 return;
             }
 
-            if (_mouseButton == Mouse.Button.Left)
+            if (_mouseButton == Mouse.Button.Left && 
+                SelectedMaterial != MaterialType.Empty)
             {
-                switch (SelectedMaterial)
-                {
-                    case MaterialType.Sand:
-                    case MaterialType.Water:
-                        AddMaterialToWorld(_mouseX, _mouseY);
-                        break;
-                }
+                AddMaterialToWorld(_mouseX, _mouseY);
             }
             
             if (_mouseButton == Mouse.Button.Right)
