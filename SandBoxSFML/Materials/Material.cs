@@ -69,6 +69,11 @@ namespace SandBoxSFML.Materials
 
         public void Step(CellularMatrix matrix, int i, int j)
         {
+            if (Type == MaterialType.Empty)
+            {
+                return;
+            }
+
             if (IsUpdatedThisFrame)
             {
                 return;
@@ -76,7 +81,7 @@ namespace SandBoxSFML.Materials
 
             if (IsMovable)
             {
-                Velocity = new Vector2i((int)(Utils.Clamp(Velocity.X + Constants.Gravity.X, -10, 10) * 1.0), Utils.Clamp(Velocity.Y + Constants.Gravity.Y, -10, 10));
+                Velocity = new Vector2i(Utils.Clamp(Velocity.X + Constants.Gravity.X, -10, 10), Utils.Clamp(Velocity.Y + Constants.Gravity.Y, -10, 10));
             }
 
             switch (Type)

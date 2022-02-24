@@ -68,13 +68,11 @@ namespace SandBoxSFML
             MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i2, j2, _matrix[i2, j2].Color));
         }
 
-        public void StepAll(long framesCount)
+        public void StepAll()
         {
-            var r = (framesCount % 2) == 0;
-
             for (int j = Height - 1; j >= 0; j--)
             {
-                for (int i = r ? 0 : Width - 1; r ? i < Width : i >= 0; i += r ? 1 : -1)
+                for (int i = 0; i < Width; i++)
                 {
                     _matrix[i, j].Step(this, i, j);
                 }
@@ -110,13 +108,11 @@ namespace SandBoxSFML
             }
         }
 
-        public void ToggleFrameUpdate(long framesCount)
+        public void ToggleFrameUpdate()
         {
-            var r = (framesCount % 2) == 0;
-
             for (int j = Height - 1; j >= 0; j--)
             {
-                for (int i = r ? 0 : Width - 1; r ? i < Width : i >= 0; i += r ? 1 : -1)
+                for (int i = 0; i < Width; i++)
                 {
                     _matrix[i, j].IsUpdatedThisFrame = false;
                 }

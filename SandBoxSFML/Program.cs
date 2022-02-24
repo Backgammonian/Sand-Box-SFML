@@ -30,7 +30,7 @@ namespace SandBoxSFML
             else
             {
                 _width = 800;
-                _height = 600;
+                _height = 450;
             }
 
             _world = new World((int)_width, (int)_height);
@@ -63,10 +63,11 @@ namespace SandBoxSFML
                 _delta = clock.Restart().AsSeconds();
 
                 Window.DispatchEvents();
+
                 _world.Update();
 
                 Window.Clear(Color.Black);
-                Window.Draw(_world.Sprite);
+                Window.Draw(_world);
                 Window.Draw(_ui);
 
                 Window.Display();

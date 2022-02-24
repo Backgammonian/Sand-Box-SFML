@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using SFML.Window;
 using SFML.System;
 using SFML.Graphics;
@@ -6,9 +7,11 @@ using SandBoxSFML.Materials;
 
 namespace SandBoxSFML
 {
-    public class World
+    public class World : Drawable
     {
         private readonly ImageArray _canvas;
+        private readonly Sprite _sprite;
+        private readonly Shader _shader;
         private readonly CellularMatrix _matrix;
         private float _selectionRadius;
         private DateTime _lastTime;
@@ -21,12 +24,15 @@ namespace SandBoxSFML
             Width = width;
             Height = height;
 
-            _canvas = new ImageArray(Width, Height);
             _matrix = new CellularMatrix(Width, Height);
             _matrix.MatrixUpdated += OnMatrixUpdated;
 
-            Sprite = new Sprite();
-            Sprite.Texture = _canvas.Bitmap;
+            _canvas = new ImageArray(Width, Height);
+            _sprite = new Sprite();
+            _sprite.Texture = _canvas.Bitmap;
+            var fragmentShaderFile = Properties.Resources.simpleShader;
+            _shader = new Shader(null, null, new MemoryStream(fragmentShaderFile));
+            _shader.SetUniform("texture", Shader.CurrentTexture);
 
             Clear();
 
@@ -36,7 +42,6 @@ namespace SandBoxSFML
         public int Width { get; }
         public int Height { get; }
         public long FPS { get; private set; }
-        public Sprite Sprite { get; }
         public bool IsUsed { get; private set; }
 
         public MaterialType SelectedMaterial { get; private set; }
@@ -65,12 +70,24 @@ namespace SandBoxSFML
             _matrix.Clear();
         }
 
+        public void Draw(RenderTarget target, RenderStates states)
+        {
+            if (Shader.IsAvailable)
+            {
+                states = new RenderStates(states)
+                {
+                    Shader = _shader
+                };
+                target.Draw(_sprite, states);
+            }
+        }
+
         public void Update()
         {
             Input();
 
-            _matrix.StepAll(_framesRendered);
-            _matrix.ToggleFrameUpdate(_framesRendered);
+            _matrix.StepAll();
+            _matrix.ToggleFrameUpdate();
 
             _canvas.Update();
 
