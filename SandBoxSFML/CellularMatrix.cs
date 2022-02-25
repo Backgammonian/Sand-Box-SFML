@@ -7,6 +7,8 @@ namespace SandBoxSFML
     public class CellularMatrix
     {
         private readonly Material[,] _matrix;
+        private readonly bool[,] _isUpdatedThisFrame;
+        private readonly bool[,] _fillValue;
 
         public CellularMatrix(int width, int height)
         {
@@ -14,6 +16,9 @@ namespace SandBoxSFML
             Height = height;
 
             _matrix = new Material[Width, Height];
+            _isUpdatedThisFrame = new bool[Width, Height];
+
+            _fillValue = new[,] { { false }, { false } };
         }
 
         public event EventHandler<MatrixUpdatedEventArgs> MatrixUpdated;
@@ -27,13 +32,36 @@ namespace SandBoxSFML
             private set => _matrix[i, j] = value;
         }
 
-        public void Clear()
+        public bool IsUpdatedThisFrame(int i, int j)
+        {
+            return _isUpdatedThisFrame[i, j];
+        }
+
+        public void UpdateCell(int i, int j)
+        {
+            _isUpdatedThisFrame[i, j] = true;
+        }
+
+        public void Initialize()
         {
             for (int i = 0; i < Width; i++)
             {
                 for (int j = 0; j < Height; j++)
                 {
                     _matrix[i, j] = new Material(MaterialType.Empty);
+                    _isUpdatedThisFrame[i, j] = false;
+                }
+            }
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    _matrix[i, j].ChangeType(MaterialType.Empty);
+                    _isUpdatedThisFrame[i, j] = false;
                 }
             }
         }
@@ -63,6 +91,9 @@ namespace SandBoxSFML
             var t = _matrix[i1, j1];
             _matrix[i1, j1] = _matrix[i2, j2];
             _matrix[i2, j2] = t;
+
+            _isUpdatedThisFrame[i1, j1] = true;
+            _isUpdatedThisFrame[i2, j2] = true;
 
             MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i1, j1, _matrix[i1, j1].Color));
             MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i2, j2, _matrix[i2, j2].Color));
@@ -110,13 +141,7 @@ namespace SandBoxSFML
 
         public void ToggleFrameUpdate()
         {
-            for (int j = Height - 1; j >= 0; j--)
-            {
-                for (int i = 0; i < Width; i++)
-                {
-                    _matrix[i, j].IsUpdatedThisFrame = false;
-                }
-            }
+            _isUpdatedThisFrame.Fill(_fillValue);
         }
     }
 }

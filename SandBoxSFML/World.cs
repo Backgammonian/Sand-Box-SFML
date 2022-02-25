@@ -67,7 +67,7 @@ namespace SandBoxSFML
         private void Clear()
         {
             _canvas.Clear(Color.Black);
-            _matrix.Clear();
+            _matrix.Initialize();
         }
 
         public void Draw(RenderTarget target, RenderStates states)

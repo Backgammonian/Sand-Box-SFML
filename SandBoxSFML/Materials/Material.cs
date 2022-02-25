@@ -10,7 +10,6 @@ namespace SandBoxSFML.Materials
             Type = type;
             Color = MaterialColor.GetColor(Type);
             Velocity = new Vector2i(0, 0);
-            IsUpdatedThisFrame = false;
             IsMovable = false;
             SpreadRate = 0;
             FallRate = 0;
@@ -37,7 +36,6 @@ namespace SandBoxSFML.Materials
         public MaterialType Type { get; private set; }
         public Color Color { get; private set; }
         public Vector2i Velocity { get; set; }
-        public bool IsUpdatedThisFrame { get; set; }
         public bool IsMovable { get; private set; }
         public int SpreadRate { get; private set; }
         public int FallRate { get; private set; }
@@ -74,7 +72,7 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            if (IsUpdatedThisFrame)
+            if (matrix.IsUpdatedThisFrame(i, j))
             {
                 return;
             }
@@ -132,7 +130,7 @@ namespace SandBoxSFML.Materials
                 break;
             }
 
-            IsUpdatedThisFrame = true;
+            matrix.UpdateCell(i, j);
         }
     }
 }
