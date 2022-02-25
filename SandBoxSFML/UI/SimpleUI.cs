@@ -16,10 +16,11 @@ namespace SandBoxSFML.UI
         private int? _previousButtonIndex;
         private float _selectionRadius;
         private MaterialType _selectedMaterial;
-        private const int _buttonWidth = 30;
-        private const int _buttonHeight = 30;
+        private const int _buttonWidth = 20;
+        private const int _buttonHeight = 20;
+        private Text _materialPreview;
 
-        public SimpleUI(Vector2f position, Vector2f size, SFML.Graphics.Color color)
+        public SimpleUI(Vector2f position, Vector2f size, Color color, Font font, Vector2f fontPosition)
         {
             Position = position;            
             Size = size;
@@ -27,16 +28,9 @@ namespace SandBoxSFML.UI
             _main = new ClickableRectangle(position, size, color);
 
             _materialButtons = new List<ClickableRectangle>();
-            _materialButtons.Add(new ClickableRectangle(
-                new Vector2f(Position.X + 5, Position.Y + 5 + _buttonHeight * _materialButtons.Count), 
-                new Vector2f(_buttonWidth, _buttonHeight), 
-                MaterialColor.GetColor(MaterialType.Sand), 
-                MaterialType.Sand));
-            _materialButtons.Add(new ClickableRectangle(
-                new Vector2f(Position.X + 5, Position.Y + 10 + _buttonHeight * _materialButtons.Count),
-                new Vector2f(_buttonWidth, _buttonHeight),
-                MaterialColor.GetColor(MaterialType.Water),
-                MaterialType.Water));
+            AddButton(MaterialType.Sand);
+            AddButton(MaterialType.Water);
+            AddButton(MaterialType.Stone);
 
             for (int i = 0; i < _materialButtons.Count; i++)
             {
@@ -51,6 +45,13 @@ namespace SandBoxSFML.UI
             _circleShape.OutlineThickness = 2;
             _circleShape.OutlineColor = color;
             _circleShape.Radius = SelectionRadius;
+
+            _materialPreview = new Text();
+            _materialPreview.DisplayedString = "";
+            _materialPreview.Font = font;
+            _materialPreview.CharacterSize = 16;
+            _materialPreview.FillColor = Color.White;
+            _materialPreview.Position = fontPosition;
 
             SelectionRadius = 10;
             SelectedMaterial = MaterialType.Sand;
@@ -87,6 +88,15 @@ namespace SandBoxSFML.UI
                     SelectionRadiusChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
+        }
+
+        private void AddButton(MaterialType material)
+        {
+            _materialButtons.Add(new ClickableRectangle(
+                new Vector2f(Position.X + 5, Position.Y + (_materialButtons.Count + 1) * 5 + _buttonHeight * _materialButtons.Count),
+                new Vector2f(_buttonWidth, _buttonHeight),
+                MaterialColor.GetColor(material),
+                material));
         }
 
         public void SetMaterial(MaterialType material)

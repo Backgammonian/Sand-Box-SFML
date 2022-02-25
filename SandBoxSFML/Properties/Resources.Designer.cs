@@ -63,6 +63,16 @@ namespace SandBoxSFML.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
+        public static byte[] Minecraft {
+            get {
+                object obj = ResourceManager.GetObject("Minecraft", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
         public static byte[] simpleShader {
             get {
                 object obj = ResourceManager.GetObject("simpleShader", resourceCulture);

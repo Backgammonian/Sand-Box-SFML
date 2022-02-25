@@ -22,7 +22,21 @@ namespace SandBoxSFML.Materials
 
             var waterColors = new ColorSamples();
             waterColors.Add(new Color(35, 137, 218));
+            waterColors.Add(new Color(33, 125, 196));
+            waterColors.Add(new Color(34, 130, 204));
             _colors.Add(MaterialType.Water, waterColors);
+
+            var stoneColors = new ColorSamples();
+            stoneColors.Add(new Color(136, 140, 141));
+            stoneColors.Add(new Color(123, 126, 127));
+            stoneColors.Add(new Color(128, 131, 132));
+            _colors.Add(MaterialType.Stone, stoneColors);
+
+            var oilColors = new ColorSamples();
+            oilColors.Add(new Color(44, 36, 22));
+            oilColors.Add(new Color(48, 39, 24));
+            oilColors.Add(new Color(40, 33, 20));
+            _colors.Add(MaterialType.Oil, oilColors);
 
             var voidColor = new ColorSamples();
             voidColor.Add(Color.Transparent);

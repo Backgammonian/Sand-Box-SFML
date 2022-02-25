@@ -4,12 +4,7 @@ namespace SandBoxSFML
 {
     public static class Utils
     {
-        private static readonly Random _r;
-
-        static Utils()
-        {
-            _r = new Random();
-        }
+        private static readonly Random _r = new Random();
 
         public static int Clamp(int num, int min, int max)
         {
@@ -37,5 +32,5 @@ namespace SandBoxSFML
 
             return _r.Next(32767) % (upper - lower + 1) + lower;
         }
-    }
+	}
 }

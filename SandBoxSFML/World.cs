@@ -146,6 +146,23 @@ namespace SandBoxSFML
 
         private void AddMaterialToWorld(int x, int y)
         {
+            if (SelectedMaterial == MaterialType.Stone)
+            {
+                var R = (int)SelectionRadius;
+                for (var i = -R; i <= R; i++)
+                {
+                    for (var j = -R; j <= R; j++)
+                    {
+                        if ((i * i + j * j) <= R * R)
+                        {
+                            _matrix.Add(SelectedMaterial, new Point(x + i, y + j), new Vector2i(0, 0));
+                        }
+                    }
+                }
+
+                return;
+            }
+
             var count = Utils.RandomValue(1, 1000);
             for (int i = 0; i < count; i++)
             {
@@ -155,7 +172,7 @@ namespace SandBoxSFML
                 var ry = Math.Sin(theta) * r;
 
                 var position = new Point(x + (int)rx, y + (int)ry);
-                var deviation = Utils.Next(0, 100) > 50 ? -1 : 1;
+                var deviation = Utils.Next(0, 100) > 50 ? -32 : 32;
                 var velocity = new Vector2i(deviation, Utils.RandomValue(-2, 5));
 
                 _matrix.Add(SelectedMaterial, position, velocity);
@@ -165,19 +182,13 @@ namespace SandBoxSFML
         private void EraseMaterial(int x, int y)
         {
             var R = (int)SelectionRadius;
-            for (var i = -R; i < R; i++)
+            for (var i = -R; i <= R; i++)
             {
-                for (var j = -R; j < R; j++)
+                for (var j = -R; j <= R; j++)
                 {
-                    var rx = x + i;
-                    var ry = y + j;
-                    var r = new Vector2i(rx, ry);
-                    var origin = new Vector2i(x, y);
-                    var l = new Vector2i(origin.X - r.X, origin.Y - r.Y);
-
-                    if ((l.X * l.X + l.Y + l.Y) <= R * R)
+                    if ((i * i + j * j) <= R * R)
                     {
-                        _matrix.Erase(rx, ry);
+                        _matrix.Erase(x + i, y + j);
                     }
                 }
             }

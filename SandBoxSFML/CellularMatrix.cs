@@ -48,7 +48,7 @@ namespace SandBoxSFML
             {
                 for (int j = 0; j < Height; j++)
                 {
-                    _matrix[i, j] = new Material(MaterialType.Empty);
+                    _matrix[i, j] = new Material(this, MaterialType.Empty);
                     _isUpdatedThisFrame[i, j] = false;
                 }
             }
@@ -81,9 +81,136 @@ namespace SandBoxSFML
             return IsWithihBounds(i, j) && IsFree(_matrix[i, j]);
         }
 
-        public bool IsLiquid(int i, int j)
+        public bool IsWater(int i, int j)
         {
             return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Water);
+        }
+
+        public bool IsOil(int i, int j)
+        {
+            return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Oil);
+        }
+
+        public bool IsLiquid(int i, int j)
+        {
+            return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Water || _matrix[i, j].Type == MaterialType.Oil);
+        }
+
+        public bool IsWaterNearby(int i, int j, out int iWater, out int jWater) //may particles become biased to go in particular direction?
+        {
+            if (IsWater(i + 1, j))
+            {
+                iWater = i + 1;
+                jWater = j;
+
+                return true;
+            }
+
+            if (IsWater(i + 1, j + 1))
+            {
+                iWater = i + 1;
+                jWater = j + 1;
+
+                return true;
+            }
+
+            if (IsWater(i, j + 1))
+            {
+                iWater = i;
+                jWater = j + 1;
+
+                return true;
+            }
+
+            if (IsWater(i - 1, j))
+            {
+                iWater = i - 1;
+                jWater = j;
+
+                return true;
+            }
+
+            if (IsWater(i - 1, j - 1))
+            {
+                iWater = i - 1;
+                jWater = j - 1;
+
+                return true;
+            }
+
+            if (IsWater(i, j - 1))
+            {
+                iWater = i;
+                jWater = j - 1;
+
+                return true;
+            }
+
+            if (IsWater(i + 1, j - 1))
+            {
+                iWater = i + 1;
+                jWater = j - 1;
+
+                return true;
+            }
+
+            if (IsWater(i - 1, j + 1))
+            {
+                iWater = i - 1;
+                jWater = j + 1;
+
+                return true;
+            }
+
+            iWater = i;
+            jWater = j;
+
+            return false;
+        }
+
+        public bool IsCompletelySurrounded(int i, int j)
+        {
+            if (IsFree(i + 1, j))
+            {
+                return false;
+            }
+
+            if (IsFree(i + 1, j + 1))
+            {
+                return false;
+            }
+
+            if (IsFree(i, j + 1))
+            {
+                return false;
+            }
+
+            if (IsFree(i - 1, j))
+            {
+                return false;
+            }
+
+            if (IsFree(i - 1, j - 1))
+            {
+                return false;
+            }
+
+            if (IsFree(i, j - 1))
+            {
+                return false;
+            }
+
+            if (IsFree(i + 1, j - 1))
+            {
+                return false;
+            }
+
+            if (IsFree(i - 1, j + 1))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void Swap(int i1, int j1, int i2, int j2)
@@ -105,7 +232,7 @@ namespace SandBoxSFML
             {
                 for (int i = 0; i < Width; i++)
                 {
-                    _matrix[i, j].Step(this, i, j);
+                    _matrix[i, j].Step(i, j);
                 }
             }
         }
@@ -123,7 +250,7 @@ namespace SandBoxSFML
             if (IsFree(i, j))
             {
                 _matrix[i, j].ChangeType(type);
-                _matrix[i, j].Velocity = velocity;
+                _matrix[i, j].ChangeVelocity(velocity);
 
                 MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, _matrix[i, j].Color));
             }
