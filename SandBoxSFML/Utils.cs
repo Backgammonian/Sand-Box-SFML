@@ -30,7 +30,7 @@ namespace SandBoxSFML
                 upper = t;
             }
 
-            return _r.Next(32767) % (upper - lower + 1) + lower;
+            return _r.Next(int.MaxValue) % (upper - lower + 1) + lower;
         }
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using SFML.Window;
 using SFML.Graphics;
 using SFML.System;
@@ -19,7 +20,9 @@ namespace SandBoxSFML
         public static RenderWindow Window { get; private set; }
 
         private static void Main(string[] args)
-        {   
+        {
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+
             if (args.Length == 2 &&
                 uint.TryParse(args[0], out uint width) &&
                 uint.TryParse(args[1], out uint height))
@@ -94,13 +97,13 @@ namespace SandBoxSFML
         private static void OnMouseWheelScrolled(object sender, MouseWheelScrollEventArgs e)
         {
             _ui.AddSelectionRadius((int)e.Delta);
-            _ui.UpdateCirclePosition(e.X, e.Y);
+            _ui.UpdatePosition(e.X, e.Y);
         }
 
         private static void OnMouseMoved(object sender, MouseMoveEventArgs e)
         {
             _world.UpdateMousePosition(e.X, e.Y);
-            _ui.UpdateCirclePosition(e.X, e.Y);
+            _ui.UpdatePosition(e.X, e.Y);
         }
 
         private static void OnMouseButtonPressed(object sender, MouseButtonEventArgs e)

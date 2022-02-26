@@ -71,24 +71,29 @@ namespace SandBoxSFML
             return i >= 0 && i < Width && j >= 0 && j < Height;
         }
 
-        public bool IsFree(Material cell)
-        {
-            return cell.Type == MaterialType.Empty;
-        }
-
         public bool IsFree(int i, int j)
         {
-            return IsWithihBounds(i, j) && IsFree(_matrix[i, j]);
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Empty;
+        }
+
+        public bool IsOccupied(int i, int j)
+        {
+            return IsWithihBounds(i, j) && _matrix[i, j].Type != MaterialType.Empty;
+        }
+
+        public bool IsSand(int i, int j)
+        {
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Sand;
         }
 
         public bool IsWater(int i, int j)
         {
-            return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Water);
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Water;
         }
 
         public bool IsOil(int i, int j)
         {
-            return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Oil);
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Oil;
         }
 
         public bool IsLiquid(int i, int j)

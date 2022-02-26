@@ -14,6 +14,10 @@ namespace SandBoxSFML.Materials
             _r = new Random();
             _colors = new Dictionary<MaterialType, ColorSamples>();
 
+            var voidColor = new ColorSamples();
+            voidColor.Add(Color.Transparent);
+            _colors.Add(MaterialType.Empty, voidColor);
+
             var sandColors = new ColorSamples();
             sandColors.Add(new Color(234, 191, 125));
             sandColors.Add(new Color(255, 170, 114));
@@ -37,10 +41,6 @@ namespace SandBoxSFML.Materials
             oilColors.Add(new Color(48, 39, 24));
             oilColors.Add(new Color(40, 33, 20));
             _colors.Add(MaterialType.Oil, oilColors);
-
-            var voidColor = new ColorSamples();
-            voidColor.Add(Color.Transparent);
-            _colors.Add(MaterialType.Empty, voidColor);
         }
 
         public static Color GetColor(MaterialType type)

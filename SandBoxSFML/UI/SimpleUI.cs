@@ -18,7 +18,7 @@ namespace SandBoxSFML.UI
         private MaterialType _selectedMaterial;
         private const int _buttonWidth = 20;
         private const int _buttonHeight = 20;
-        private Text _materialPreview;
+        private readonly Text _materialPreview;
 
         public SimpleUI(Vector2f position, Vector2f size, Color color, Font font, Vector2f fontPosition)
         {
@@ -137,6 +137,7 @@ namespace SandBoxSFML.UI
                 target.Draw(_materialButtons[i], states);
             }
             target.Draw(_circleShape, states);
+            target.Draw(_materialPreview, states);
         }
 
         public bool IsMouseInside(int x, int y)
@@ -182,9 +183,28 @@ namespace SandBoxSFML.UI
             }
         }
 
-        public void UpdateCirclePosition(int x, int y)
+        public void UpdatePosition(int x, int y)
         {
             _circleShape.Position = new Vector2f(x - _circleShape.Radius, y - _circleShape.Radius);
+
+            int? buttonIndex = null;
+            for (int i = 0; i < _materialButtons.Count; i++)
+            {
+                if (_materialButtons[i].IsMouseInside(x, y))
+                {
+                    buttonIndex = i;
+                    break;
+                }
+            }
+
+            if (buttonIndex.HasValue)
+            {
+                _materialPreview.DisplayedString = _materialButtons[buttonIndex.Value].AssignedMaterial + "";
+            }
+            else
+            {
+                _materialPreview.DisplayedString = "";
+            }
         }
     }
 }

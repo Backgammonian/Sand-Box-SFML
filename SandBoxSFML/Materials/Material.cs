@@ -114,21 +114,38 @@ namespace SandBoxSFML.Materials
                     var vX = i + Velocity.X;
                     var vY = j + Velocity.Y;
 
+                    Point? validPoint = null;
                     CalculateTrajectory(i, j, vX, vY);
-                    for (int number = _trajectory.Count - 1; number >= 0; number--)
+                    for (int number = 0; number < _trajectory.Count; number++)
                     {
                         var point = _trajectory[number];
+
+                        if (point.X == i &&
+                            point.Y == j)
+                        {
+                            continue;
+                        }
+
                         if (Matrix.IsFree(point.X, point.Y) ||
                             Matrix.IsWater(point.X, point.Y))
                         {
-                            Matrix.Swap(point.X, point.Y, i, j);
-
-                            return;
+                            validPoint = point;
                         }
+                        else
+                        {
+                            break;
+                        }
+                    }
+        
+                    if (validPoint.HasValue)
+                    {
+                        Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                        return;
                     }
 
                     var random = Utils.Next(0, 100);
-                    var direction = random < 33 ? Direction.Right : random > 66 ? Direction.Left : Direction.None;
+                    var direction = random < 50 ? Direction.Right : Direction.Left;
                     var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
 
                     if (Matrix.IsFree(cellBelow.X, cellBelow.Y) ||
@@ -138,12 +155,8 @@ namespace SandBoxSFML.Materials
 
                         return;
                     }
-                    
-                    if (Matrix.IsWaterNearby(i, j, out int iWater, out int jWater) &&
-                        Utils.RandomValue(0, 10) == 0)
-                    {
-                        Matrix.Swap(iWater, jWater, i, j);
-                    }
+
+                    ChangeVelocity(new Vector2i(Utils.Clamp(Velocity.X, -10, 10), Utils.Clamp(Velocity.Y / 2, -10, 10)));
                 }
                 break;
 
@@ -152,55 +165,41 @@ namespace SandBoxSFML.Materials
                     var vX = i + Velocity.X;
                     var vY = j + Velocity.Y;
 
-                    CalculateTrajectory(i, j, vX, vY);
-                    for (int number = _trajectory.Count - 1; number >= 0; number--)
+                    var n = 0;
+                    while (n < 100)
                     {
-                        var point = _trajectory[number];
-                        if (Matrix.IsFree(point.X, point.Y) ||
-                            Matrix.IsOil(point.X, point.Y))
+                        if (Matrix.IsFree(i + n, j + 1) ||
+                        Matrix.IsOil(i + n, j + 1))
                         {
-                            Matrix.Swap(point.X, point.Y, i, j);
+                            Matrix.Swap(i + n, j + 1, i, j);
 
                             return;
                         }
+                        n += 1;
+                    }
+                    /*if (Matrix.IsFree(i, j + 1) ||
+                        Matrix.IsOil(i, j + 1))
+                    {
+                        Matrix.Swap(i, j + 1, i, j);
+
+                        return;
                     }
 
-                    var random = Utils.Next(0, 100);
-                    var direction = random < 33 ? Direction.Right : random > 66 ? Direction.Left : Direction.None;
-                    var cellBelow = new Point(direction == Direction.Right ? (i + SpreadRate) : direction == Direction.Left ? (i - SpreadRate) : i, j + FallRate);
-
-                    CalculateTrajectory(i, j, cellBelow.X, cellBelow.Y);
-                    for (int number = _trajectory.Count - 1; number >= 0; number--)
+                    if (Matrix.IsFree(i - 1, j) ||
+                        Matrix.IsOil(i - 1, j))
                     {
-                        var point = _trajectory[number];
-                        if (Matrix.IsFree(point.X, point.Y) ||
-                            Matrix.IsOil(point.X, point.Y))
-                        {
-                            Matrix.Swap(point.X, point.Y, i, j);
+                        Matrix.Swap(i - 1, j, i, j);
 
-                            return;
-                        }
+                        return;
                     }
 
-                    /*var random = Utils.Next(0, 100);
-                    var direction = random < 33 ? Direction.Right : random > 66 ? Direction.Left : Direction.None;
-                    var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
-
-                    if (Matrix.IsFree(cellBelow.X, cellBelow.Y) ||
-                        Matrix.IsOil(cellBelow.X, cellBelow.Y))
+                    if (Matrix.IsFree(i + 1, j) ||
+                        Matrix.IsOil(i + 1, j))
                     {
-                        Matrix.Swap(cellBelow.X, cellBelow.Y, i, j);
+                        Matrix.Swap(i + 1, j, i, j);
 
                         return;
                     }*/
-
-                    if (Matrix.IsWaterNearby(i, j, out int iWater, out int jWater) &&
-                        Utils.RandomValue(0, 10) == 0)
-                    {
-                        Matrix.Swap(iWater, jWater, i, j);
-
-                        return;
-                    }
                 }
                 break;
             }
@@ -230,12 +229,14 @@ namespace SandBoxSFML.Materials
                 var e2 = 2 * err;
                 if (e2 > -dy)
                 {
-                    err -= dy; x0 += sx;
+                    err -= dy; 
+                    x0 += sx;
                 }
 
                 if (e2 < dx)
                 {
-                    err += dx; y0 += sy;
+                    err += dx; 
+                    y0 += sy;
                 }
             }
         }

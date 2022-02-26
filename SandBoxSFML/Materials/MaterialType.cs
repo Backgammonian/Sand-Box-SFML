@@ -2,6 +2,6 @@
 {
     public enum MaterialType
     {
-        Empty, Sand, Water, Oil, Stone
+        Empty, Sand, Water, Stone, Oil 
     }
 }
