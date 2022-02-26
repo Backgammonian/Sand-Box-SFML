@@ -32,5 +32,10 @@ namespace SandBoxSFML
 
             return _r.Next(int.MaxValue) % (upper - lower + 1) + lower;
         }
-	}
+
+        public static bool NextBoolean()
+        {
+            return _r.Next() > (Int32.MaxValue / 2);
+        }
+    }
 }

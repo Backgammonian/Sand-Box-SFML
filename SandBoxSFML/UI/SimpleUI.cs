@@ -41,7 +41,7 @@ namespace SandBoxSFML.UI
             _materialButtons[0].Select();
 
             _circleShape = new CircleShape();
-            _circleShape.FillColor = SFML.Graphics.Color.Transparent;
+            _circleShape.FillColor = Color.Transparent;
             _circleShape.OutlineThickness = 2;
             _circleShape.OutlineColor = color;
             _circleShape.Radius = SelectionRadius;

@@ -242,7 +242,7 @@ namespace SandBoxSFML
             }
         }
 
-        public void Add(MaterialType type, Point location, Vector2i velocity)
+        public void Add(MaterialType type, Point location, Vector2f velocity)
         {
             if (type == MaterialType.Empty)
             {
