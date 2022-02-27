@@ -6,8 +6,8 @@
 
         public const int MaxRadius = 100;
 
-        public const int WaterSpreadRate = 15;
-        public const int WaterFallRate = 5;
+        public const int WaterSpreadRate = 5;
+        public const int WaterFallRate = 2;
         public const int OilSpreadRate = 5;
         public const int OilFallRate = 2;
         public const int FireSpreadRate = 3;
@@ -21,9 +21,9 @@
         public const int SmokeSpawnChance = 20;
         public const int EmberSpawnChance = 30;
 
-        public const int WoodIgnitionChance = 0;
-        public const int CoalIgnitionChance = 0;
-        public const int OilIgnitionChance = 0;
+        public const int WoodIgnitionChance = 100;
+        public const int CoalIgnitionChance = 20;
+        public const int OilIgnitionChance = 3;
 
         public const int SteamRegionWidth = 3;
         public const int SteamRegionHeight = 3;

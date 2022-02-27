@@ -39,7 +39,7 @@ namespace SandBoxSFML
             _world = new World((int)_width, (int)_height);
 
             var font = new Font(Properties.Resources.Minecraft);
-            _ui = new SimpleUI(new Vector2f(5, 25), new Vector2f(30, 300), new Color(255, 255, 255, 50), font, new Vector2f(5, 5));
+            _ui = new SimpleUI(new Vector2f(5, 25), new Vector2f(40, 360), new Color(255, 255, 255, 50), font, new Vector2f(5, 5));
             _ui.MaterialChanged += OnUIMaterialChanged;
             _ui.SelectionRadiusChanged += OnUISelectionRadiusChanged;
 

@@ -16,9 +16,10 @@ namespace SandBoxSFML.UI
         private int? _previousButtonIndex;
         private float _selectionRadius;
         private MaterialType _selectedMaterial;
-        private const int _buttonWidth = 20;
-        private const int _buttonHeight = 20;
+        private const int _buttonWidth = 30;
+        private const int _buttonHeight = 30;
         private readonly Text _materialPreview;
+        private readonly List<Text> _materialIcons;
 
         public SimpleUI(Vector2f position, Vector2f size, Color color, Font font, Vector2f fontPosition)
         {
@@ -28,15 +29,16 @@ namespace SandBoxSFML.UI
             _main = new ClickableRectangle(position, size, color);
 
             _materialButtons = new List<ClickableRectangle>();
-            AddButton(MaterialType.Sand);
-            AddButton(MaterialType.Water);
-            AddButton(MaterialType.Stone);
-            AddButton(MaterialType.Oil);
-            AddButton(MaterialType.Fire);
-            AddButton(MaterialType.Steam);
-            AddButton(MaterialType.Smoke);
-            AddButton(MaterialType.Coal);
-            AddButton(MaterialType.Wood);
+            _materialIcons = new List<Text>();
+            AddButton(MaterialType.Sand, font);
+            AddButton(MaterialType.Water, font);
+            AddButton(MaterialType.Stone, font);
+            AddButton(MaterialType.Oil, font);
+            AddButton(MaterialType.Fire, font);
+            AddButton(MaterialType.Steam, font);
+            AddButton(MaterialType.Smoke, font);
+            AddButton(MaterialType.Coal, font);
+            AddButton(MaterialType.Wood, font);
 
             for (int i = 0; i < _materialButtons.Count; i++)
             {
@@ -96,13 +98,28 @@ namespace SandBoxSFML.UI
             }
         }
 
-        private void AddButton(MaterialType material)
+        private void AddButton(MaterialType material, Font font)
         {
+            var x = Position.X + 5;
+            var y = Position.Y + (_materialButtons.Count + 1) * 5 + _buttonHeight * _materialButtons.Count;
+            var position = new Vector2f(x, y);
+
             _materialButtons.Add(new ClickableRectangle(
-                new Vector2f(Position.X + 5, Position.Y + (_materialButtons.Count + 1) * 5 + _buttonHeight * _materialButtons.Count),
+                position,
                 new Vector2f(_buttonWidth, _buttonHeight),
                 MaterialColor.GetColor(material, 0),
                 material));
+
+            var materialIcon = new Text();
+            materialIcon.DisplayedString = material.ToString().Substring(0, 2) + ".";
+            materialIcon.Font = font;
+            materialIcon.CharacterSize = 16;
+            materialIcon.FillColor = Utils.InvertColor(MaterialColor.GetColor(material, 0));
+            materialIcon.OutlineColor = Color.Black;
+            materialIcon.OutlineThickness = 1;
+            materialIcon.Position = new Vector2f(position.X + 2, position.Y + 2);
+
+            _materialIcons.Add(materialIcon);
         }
 
         public void SetMaterial(MaterialType material)
@@ -144,6 +161,10 @@ namespace SandBoxSFML.UI
             }
             target.Draw(_circleShape, states);
             target.Draw(_materialPreview, states);
+            for (int i = 0; i < _materialIcons.Count; i++)
+            {
+                target.Draw(_materialIcons[i], states);
+            }
         }
 
         public bool IsMouseInside(int x, int y)

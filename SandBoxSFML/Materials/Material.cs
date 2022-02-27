@@ -193,7 +193,7 @@ namespace SandBoxSFML.Materials
 
             if (IsMovable)
             {
-                Velocity.X *= 0.99f;
+                Velocity.X *= 0.9f;
 
                 if (Type == MaterialType.Steam ||
                     Type == MaterialType.Smoke)
@@ -619,7 +619,7 @@ namespace SandBoxSFML.Materials
                 }
             }
 
-            /*if (Utils.RandomValue(0, Constants.EmberSpawnChance) == 0 &&
+            if (Utils.RandomValue(0, Constants.EmberSpawnChance) == 0 &&
                 LifeTime < Constants.FireLifeTime / 3)
             {
                 if (Matrix.IsFree(i, j - 1))
@@ -644,17 +644,13 @@ namespace SandBoxSFML.Materials
                 {
                     Matrix.Add(MaterialType.Ember, i - 1, j - 1, new Vector2(Utils.RandomValue(-2, 2), Utils.RandomValue(-5, 0)));
                 }
-            }*/
+            }
 
             if (Matrix.IsElementNearby(i, j, MaterialType.Oil, out int iOil, out int jOil) &&
                 Utils.RandomValue(0, Constants.OilIgnitionChance) == 0)
             {
-                //Matrix[iOil, jOil].ChangeType(MaterialType.Fire);
                 Matrix.Erase(iOil, jOil);
-                Matrix[iOil, jOil].ChangeType(MaterialType.Fire);
-
-                System.Diagnostics.Debug.WriteLine("oil is near fire! " + iOil + " " + jOil);
-                System.Diagnostics.Debug.WriteLine("(iOil, jOil) now is " + Matrix[iOil, jOil].Type);
+                Matrix.Add(MaterialType.Fire, iOil, jOil);
 
                 if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
                 {
@@ -678,7 +674,8 @@ namespace SandBoxSFML.Materials
             if (Matrix.IsElementNearby(i, j, MaterialType.Coal, out int iCoal, out int jCoal) &&
                 Utils.RandomValue(0, Constants.CoalIgnitionChance) == 0)
             {
-                Matrix[iCoal, jCoal].ChangeType(MaterialType.Fire);
+                Matrix.Erase(iCoal, jCoal);
+                Matrix.Add(MaterialType.Fire, iCoal, jCoal);
 
                 if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
                 {
@@ -702,7 +699,8 @@ namespace SandBoxSFML.Materials
             if (Matrix.IsElementNearby(i, j, MaterialType.Wood, out int iWood, out int jWood) &&
                 Utils.RandomValue(0, Constants.WoodIgnitionChance) == 0)
             {
-                Matrix[iWood, jWood].ChangeType(MaterialType.Fire);
+                Matrix.Erase(iWood, jWood);
+                Matrix.Add(MaterialType.Fire, iWood, jWood);
 
                 if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
                 {
@@ -922,10 +920,20 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
+            if (Matrix.IsElementNearby(i, j, MaterialType.Water, out int iWater, out int jWater))
+            {
+                Matrix.Erase(iWater, jWater);
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Steam, i, j);
+
+                return;
+            }
+
             if (Matrix.IsElementNearby(i, j, MaterialType.Wood, out int iWood, out int jWood) &&
                 Utils.RandomValue(0, Constants.WoodIgnitionChance) == 0)
             {
-                Matrix[iWood, jWood].ChangeType(MaterialType.Fire);
+                Matrix.Erase(iWood, jWood);
+                Matrix.Add(MaterialType.Fire, iWood, jWood);
             }
 
             var vX = (int)(i + Velocity.X);
@@ -948,7 +956,7 @@ namespace SandBoxSFML.Materials
                     Matrix.IsWater(point.X, point.Y) ||
                     Matrix.IsFire(point.X, point.Y) ||
                     Matrix.IsSmoke(point.X, point.Y) ||
-                    Matrix.IsEmber(point.X, point.Y))
+                    Matrix.IsSteam(point.X, point.Y))
                 {
                     validPoint = point;
                 }
@@ -973,7 +981,7 @@ namespace SandBoxSFML.Materials
                 Matrix.IsWater(cellAbove.X, cellAbove.Y) ||
                 Matrix.IsFire(cellAbove.X, cellAbove.Y) ||
                 Matrix.IsSmoke(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsEmber(cellAbove.X, cellAbove.Y))
+                Matrix.IsSteam(cellAbove.X, cellAbove.Y))
             {
                 Matrix.Swap(cellAbove.X, cellAbove.Y, i, j);
 

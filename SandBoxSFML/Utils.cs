@@ -1,4 +1,5 @@
 ﻿using System;
+using SFML.Graphics;
 
 namespace SandBoxSFML
 {
@@ -36,6 +37,15 @@ namespace SandBoxSFML
         public static bool NextBoolean()
         {
             return _r.Next() > (Int32.MaxValue / 2);
+        }
+
+        public static Color InvertColor(Color color)
+        {
+            var r = Convert.ToByte(255 - color.R); 
+            var g = Convert.ToByte(255 - color.G);
+            var b = Convert.ToByte(255 - color.B);
+
+            return new Color(r, g, b);
         }
     }
 }

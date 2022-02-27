@@ -266,6 +266,54 @@ namespace SandBoxSFML
             return false;
         }
 
+        public bool IsCompletelySurrounded(int i, int j)
+        {
+            var h = Utils.NextBoolean() ? -1 : 1;
+            var v = Utils.NextBoolean() ? -1 : 1;
+
+            if (IsWithihBounds(i + h, j + v) && _matrix[i + h, j + v].Type == MaterialType.Empty)
+            {
+                return false;
+            }
+
+            if (IsWithihBounds(i - h, j - v) && _matrix[i - h, j - v].Type == MaterialType.Empty)
+            {
+                return false;
+            }
+
+            if (IsWithihBounds(i + h, j - v) && _matrix[i + h, j - v].Type == MaterialType.Empty)
+            {
+                return false;
+            }
+
+            if (IsWithihBounds(i - h, j + v) && _matrix[i - h, j + v].Type == MaterialType.Empty)
+            {
+                return false;
+            }
+
+            if (IsWithihBounds(i + h, j) && _matrix[i + h, j].Type == MaterialType.Empty)
+            {
+                return false;
+            }
+
+            if (IsWithihBounds(i, j + v) && _matrix[i, j + v].Type == MaterialType.Empty)
+            {
+                return false;
+            }
+
+            if (IsWithihBounds(i - h, j) && _matrix[i - h, j].Type == MaterialType.Empty)
+            {
+                return false;
+            }
+
+            if (IsWithihBounds(i, j - v) && _matrix[i, j - v].Type == MaterialType.Empty)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public void Swap(int i1, int j1, int i2, int j2)
         {
             var t = _matrix[i1, j1];
