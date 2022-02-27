@@ -43,43 +43,81 @@ namespace SandBoxSFML.Materials
             _colors.Add(MaterialType.Oil, oilColors);
 
             var fireColors = new ColorSamples();
-            fireColors.Add(new Color(255, 232, 198));
-            fireColors.Add(new Color(255, 232, 89));
-            fireColors.Add(new Color(255, 232, 8));
-            fireColors.Add(new Color(255, 206, 0));
-            fireColors.Add(new Color(255, 154, 0));
-            fireColors.Add(new Color(255, 90, 0));
-            fireColors.Add(new Color(255, 30, 0));
-            fireColors.Add(new Color(255, 0, 0));
-            fireColors.Add(new Color(104, 0, 0));
+            fireColors.Add(new Color(242, 220, 8));
+            fireColors.Add(new Color(242, 195, 0));
+            fireColors.Add(new Color(242, 168, 0));
+            fireColors.Add(new Color(242, 140, 0));
+            fireColors.Add(new Color(242, 90, 0));
+            fireColors.Add(new Color(242, 30, 0));
+            fireColors.Add(new Color(242, 0, 0));
+            fireColors.Add(new Color(173, 0, 0));
+            fireColors.Add(new Color(114, 0, 0));
             fireColors.Add(new Color(66, 0, 0));
             _colors.Add(MaterialType.Fire, fireColors);
 
             var steamColors = new ColorSamples();
-            steamColors.Add(new Color(199, 213, 224));
-            steamColors.Add(new Color(172, 184, 193));
-            steamColors.Add(new Color(156, 167, 175));
-            steamColors.Add(new Color(140, 150, 158));
-            steamColors.Add(new Color(106, 114, 119));
-            steamColors.Add(new Color(88, 94, 99));
-            steamColors.Add(new Color(72, 77, 81));
-            steamColors.Add(new Color(54, 58, 61));
-            steamColors.Add(new Color(33, 36, 38));
-            steamColors.Add(new Color(20, 21, 22));
+            steamColors.Add(new Color(206, 206, 206, 255));
+            steamColors.Add(new Color(206, 206, 206, 230));
+            steamColors.Add(new Color(206, 206, 206, 210));
+            steamColors.Add(new Color(206, 206, 206, 180));
+            steamColors.Add(new Color(206, 206, 206, 150));
+            steamColors.Add(new Color(206, 206, 206, 130));
+            steamColors.Add(new Color(206, 206, 206, 90));
+            steamColors.Add(new Color(206, 206, 206, 50));
+            steamColors.Add(new Color(206, 206, 206, 30));
+            steamColors.Add(new Color(206, 206, 206, 1));
             _colors.Add(MaterialType.Steam, steamColors);
+
+            var smokeColors = new ColorSamples();
+            smokeColors.Add(new Color(112, 106, 92, 255));
+            smokeColors.Add(new Color(112, 106, 92, 230));
+            smokeColors.Add(new Color(112, 106, 92, 210));
+            smokeColors.Add(new Color(112, 106, 92, 180));
+            smokeColors.Add(new Color(112, 106, 92, 150));
+            smokeColors.Add(new Color(112, 106, 92, 130));
+            smokeColors.Add(new Color(112, 106, 92, 90));
+            smokeColors.Add(new Color(112, 106, 92, 50));
+            smokeColors.Add(new Color(112, 106, 92, 30));
+            smokeColors.Add(new Color(112, 106, 92, 1));
+            _colors.Add(MaterialType.Smoke, smokeColors);
+
+
+            var emberColors = new ColorSamples();
+            emberColors.Add(new Color(214, 148, 23));
+            emberColors.Add(new Color(189, 54, 20));
+            emberColors.Add(new Color(146, 43, 24));
+            _colors.Add(MaterialType.Ember, emberColors);
+
+            var coalColors = new ColorSamples();
+            coalColors.Add(new Color(74, 71, 71));
+            coalColors.Add(new Color(56, 53, 53));
+            coalColors.Add(new Color(40, 38, 38));
+            _colors.Add(MaterialType.Coal, coalColors);
+
+            var woodColors = new ColorSamples();
+            woodColors.Add(new Color(105, 64, 40));
+            woodColors.Add(new Color(122, 75, 47));
+            woodColors.Add(new Color(114, 70, 44));
+            _colors.Add(MaterialType.Wood, woodColors);
         }
 
         public static Color GetColor(MaterialType type, int lifeTime)
         {
             if (type == MaterialType.Fire)
             {
-                var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.FireLifeTime, 0, _colors[type].Count);
+                var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.FireLifeTime, 0, _colors[type].Count - 1);
                 return _colors[type][value];
             }
             else
             if (type == MaterialType.Steam)
             {
-                var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.SteamLifeTime, 0, _colors[type].Count);
+                var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.SteamLifeTime, 0, _colors[type].Count - 1);
+                return _colors[type][value];
+            }
+            else
+            if (type == MaterialType.Smoke)
+            {
+                var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.SmokeLifeTime, 0, _colors[type].Count - 1);
                 return _colors[type][value];
             }
 

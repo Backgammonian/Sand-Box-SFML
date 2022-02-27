@@ -81,14 +81,29 @@ namespace SandBoxSFML
             return IsWithihBounds(i, j) && _matrix[i, j].Type != MaterialType.Empty;
         }
 
-        public bool IsSand(int i, int j)
+        public bool IsEmber(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Sand;
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Ember;
         }
 
         public bool IsWater(int i, int j)
         {
             return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Water;
+        }
+
+        public bool IsFire(int i, int j)
+        {
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Fire;
+        }
+
+        public bool IsSmoke(int i, int j)
+        {
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Smoke;
+        }
+
+        public bool IsSteam(int i, int j)
+        {
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Steam;
         }
 
         public bool IsOil(int i, int j)
@@ -103,66 +118,69 @@ namespace SandBoxSFML
 
         public bool IsLiquidNearby(int i, int j, out int iNew, out int jNew)
         {
-            if (IsLiquid(i + 1, j))
+            var h = Utils.NextBoolean() ? -1 : 1;
+            var v = Utils.NextBoolean() ? -1 : 1;
+
+            if (IsLiquid(i + h, j - v))
             {
-                iNew = i + 1;
+                iNew = i + h;
+                jNew = j - v;
+
+                return true;
+            }
+
+            if (IsLiquid(i - h, j + v))
+            {
+                iNew = i - h;
+                jNew = j + v;
+
+                return true;
+            }
+
+            if (IsLiquid(i - h, j - v))
+            {
+                iNew = i - h;
+                jNew = j - v;
+
+                return true;
+            }
+
+            if (IsLiquid(i + h, j + v))
+            {
+                iNew = i + h;
+                jNew = j + v;
+
+                return true;
+            }
+
+            if (IsLiquid(i + h, j))
+            {
+                iNew = i + h;
                 jNew = j;
 
                 return true;
             }
 
-            if (IsLiquid(i + 1, j + 1))
-            {
-                iNew = i + 1;
-                jNew = j + 1;
-
-                return true;
-            }
-
-            if (IsLiquid(i, j + 1))
+            if (IsLiquid(i, j + v))
             {
                 iNew = i;
-                jNew = j + 1;
+                jNew = j + v;
 
                 return true;
             }
 
-            if (IsLiquid(i - 1, j))
+            if (IsLiquid(i - h, j))
             {
-                iNew = i - 1;
+                iNew = i - h;
                 jNew = j;
 
                 return true;
             }
 
-            if (IsLiquid(i - 1, j - 1))
-            {
-                iNew = i - 1;
-                jNew = j - 1;
-
-                return true;
-            }
-
-            if (IsLiquid(i, j - 1))
+            if (IsLiquid(i, j - v))
             {
                 iNew = i;
-                jNew = j - 1;
-
-                return true;
-            }
-
-            if (IsLiquid(i + 1, j - 1))
-            {
-                iNew = i + 1;
-                jNew = j - 1;
-
-                return true;
-            }
-
-            if (IsLiquid(i - 1, j + 1))
-            {
-                iNew = i - 1;
-                jNew = j + 1;
+                jNew = j - v;
 
                 return true;
             }
@@ -175,66 +193,69 @@ namespace SandBoxSFML
 
         public bool IsElementNearby(int i, int j, MaterialType type, out int iNew, out int jNew)
         {
-            if (IsWithihBounds(i + 1, j) && _matrix[i + 1, j].Type == type)
+            var h = Utils.NextBoolean() ? -1 : 1;
+            var v = Utils.NextBoolean() ? -1 : 1;
+
+            if (IsWithihBounds(i + h, j + v) && _matrix[i + h, j + v].Type == type)
             {
-                iNew = i + 1;
+                iNew = i + h;
+                jNew = j + v;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i - h, j - v) && _matrix[i - h, j - v].Type == type)
+            {
+                iNew = i - h;
+                jNew = j - v;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i + h, j - v) && _matrix[i + h, j - v].Type == type)
+            {
+                iNew = i + h;
+                jNew = j - v;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i - h, j + v) && _matrix[i - h, j + v].Type == type)
+            {
+                iNew = i - h;
+                jNew = j + v;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i + h, j) && _matrix[i + h, j].Type == type)
+            {
+                iNew = i + h;
                 jNew = j;
 
                 return true;
             }
 
-            if (IsWithihBounds(i + 1, j + 1) && _matrix[i + 1, j + 1].Type == type)
-            {
-                iNew = i + 1;
-                jNew = j + 1;
-
-                return true;
-            }
-
-            if (IsWithihBounds(i, j + 1) && _matrix[i, j + 1].Type == type)
+            if (IsWithihBounds(i, j + v) && _matrix[i, j + v].Type == type)
             {
                 iNew = i;
-                jNew = j + 1;
+                jNew = j + v;
 
                 return true;
             }
 
-            if (IsWithihBounds(i - 1, j) && _matrix[i - 1, j].Type == type)
+            if (IsWithihBounds(i - h, j) && _matrix[i - h, j].Type == type)
             {
-                iNew = i - 1;
+                iNew = i - h;
                 jNew = j;
 
                 return true;
             }
 
-            if (IsWithihBounds(i - 1, j - 1) && _matrix[i - 1, j - 1].Type == type)
-            {
-                iNew = i - 1;
-                jNew = j - 1;
-
-                return true;
-            }
-
-            if (IsWithihBounds(i, j - 1) && _matrix[i, j - 1].Type == type)
+            if (IsWithihBounds(i, j - v) && _matrix[i, j - v].Type == type)
             {
                 iNew = i;
-                jNew = j - 1;
-
-                return true;
-            }
-
-            if (IsWithihBounds(i + 1, j - 1) && _matrix[i + 1, j - 1].Type == type)
-            {
-                iNew = i + 1;
-                jNew = j - 1;
-
-                return true;
-            }
-
-            if (IsWithihBounds(i - 1, j + 1) && _matrix[i - 1, j + 1].Type == type)
-            {
-                iNew = i - 1;
-                jNew = j + 1;
+                jNew = j - v;
 
                 return true;
             }
@@ -243,51 +264,6 @@ namespace SandBoxSFML
             jNew = j;
 
             return false;
-        }
-
-        public bool IsCompletelySurrounded(int i, int j)
-        {
-            if (IsFree(i + 1, j))
-            {
-                return false;
-            }
-
-            if (IsFree(i + 1, j + 1))
-            {
-                return false;
-            }
-
-            if (IsFree(i, j + 1))
-            {
-                return false;
-            }
-
-            if (IsFree(i - 1, j))
-            {
-                return false;
-            }
-
-            if (IsFree(i - 1, j - 1))
-            {
-                return false;
-            }
-
-            if (IsFree(i, j - 1))
-            {
-                return false;
-            }
-
-            if (IsFree(i + 1, j - 1))
-            {
-                return false;
-            }
-
-            if (IsFree(i - 1, j + 1))
-            {
-                return false;
-            }
-
-            return true;
         }
 
         public void Swap(int i1, int j1, int i2, int j2)
@@ -314,21 +290,35 @@ namespace SandBoxSFML
             }
         }
 
-        public void Add(MaterialType type, Point location, Vector2 velocity)
+        public void Add(MaterialType type, int i, int j, Vector2 velocity)
         {
             if (type == MaterialType.Empty)
             {
                 return;
             }
 
-            var i = location.X;
-            var j = location.Y;
-
             if (IsFree(i, j))
             {
                 _matrix[i, j].ChangeType(type);
                 _matrix[i, j].Velocity.X = velocity.X;
                 _matrix[i, j].Velocity.Y = velocity.Y;
+
+                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, _matrix[i, j].Color));
+            }
+        }
+
+        public void Add(MaterialType type, int i, int j)
+        {
+            if (type == MaterialType.Empty)
+            {
+                return;
+            }
+
+            if (IsFree(i, j))
+            {
+                _matrix[i, j].ChangeType(type);
+                _matrix[i, j].Velocity.X = 0;
+                _matrix[i, j].Velocity.Y = 0;
 
                 MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, _matrix[i, j].Color));
             }

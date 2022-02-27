@@ -146,7 +146,9 @@ namespace SandBoxSFML
 
         private void AddMaterialToWorld(int x, int y)
         {
-            if (SelectedMaterial == MaterialType.Stone)
+            if (SelectedMaterial == MaterialType.Stone ||
+                SelectedMaterial == MaterialType.Wood ||
+                SelectedMaterial == MaterialType.Titan)
             {
                 var R = (int)SelectionRadius;
                 for (var i = -R; i <= R; i++)
@@ -155,7 +157,7 @@ namespace SandBoxSFML
                     {
                         if ((i * i + j * j) <= R * R)
                         {
-                            _matrix.Add(SelectedMaterial, new Point(x + i, y + j), new Vector2(0, 0));
+                            _matrix.Add(SelectedMaterial, x + i, y + j, new Vector2(0, 0));
                         }
                     }
                 }
@@ -171,11 +173,10 @@ namespace SandBoxSFML
                 var rx = Math.Cos(theta) * r;
                 var ry = Math.Sin(theta) * r;
 
-                var position = new Point(x + (int)rx, y + (int)ry);
                 var deviation = Utils.Next(0, 100) > 50 ? -2 : 2;
                 var velocity = new Vector2(deviation, Utils.RandomValue(-2, 5));
 
-                _matrix.Add(SelectedMaterial, position, velocity);
+                _matrix.Add(SelectedMaterial, x + (int)rx, y + (int)ry, velocity);
             }
         }
 
