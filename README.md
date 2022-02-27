@@ -1,5 +1,5 @@
 # Sand-Box-SFML
-Simple 2D physics simulation based on cellular automata (SFML.NET)
+Simple 2D physics simulation based on cellular automata
 ## Controls
 * Left click - place material
 * Right click - erase
