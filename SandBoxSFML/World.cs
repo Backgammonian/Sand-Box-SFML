@@ -155,7 +155,7 @@ namespace SandBoxSFML
                     {
                         if ((i * i + j * j) <= R * R)
                         {
-                            _matrix.Add(SelectedMaterial, new Point(x + i, y + j), new Vector2f(0, 0));
+                            _matrix.Add(SelectedMaterial, new Point(x + i, y + j), new Vector2(0, 0));
                         }
                     }
                 }
@@ -173,7 +173,7 @@ namespace SandBoxSFML
 
                 var position = new Point(x + (int)rx, y + (int)ry);
                 var deviation = Utils.Next(0, 100) > 50 ? -2 : 2;
-                var velocity = new Vector2f(deviation, Utils.RandomValue(-2, 5));
+                var velocity = new Vector2(deviation, Utils.RandomValue(-2, 5));
 
                 _matrix.Add(SelectedMaterial, position, velocity);
             }

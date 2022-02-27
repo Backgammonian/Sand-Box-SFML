@@ -37,14 +37,52 @@ namespace SandBoxSFML.Materials
             _colors.Add(MaterialType.Stone, stoneColors);
 
             var oilColors = new ColorSamples();
-            oilColors.Add(new Color(44, 36, 22));
-            oilColors.Add(new Color(48, 39, 24));
-            oilColors.Add(new Color(40, 33, 20));
+            oilColors.Add(new Color(20, 16, 14));
+            oilColors.Add(new Color(22, 18, 16));
+            oilColors.Add(new Color(15, 12, 10));
             _colors.Add(MaterialType.Oil, oilColors);
+
+            var fireColors = new ColorSamples();
+            fireColors.Add(new Color(255, 232, 198));
+            fireColors.Add(new Color(255, 232, 89));
+            fireColors.Add(new Color(255, 232, 8));
+            fireColors.Add(new Color(255, 206, 0));
+            fireColors.Add(new Color(255, 154, 0));
+            fireColors.Add(new Color(255, 90, 0));
+            fireColors.Add(new Color(255, 30, 0));
+            fireColors.Add(new Color(255, 0, 0));
+            fireColors.Add(new Color(104, 0, 0));
+            fireColors.Add(new Color(66, 0, 0));
+            _colors.Add(MaterialType.Fire, fireColors);
+
+            var steamColors = new ColorSamples();
+            steamColors.Add(new Color(199, 213, 224));
+            steamColors.Add(new Color(172, 184, 193));
+            steamColors.Add(new Color(156, 167, 175));
+            steamColors.Add(new Color(140, 150, 158));
+            steamColors.Add(new Color(106, 114, 119));
+            steamColors.Add(new Color(88, 94, 99));
+            steamColors.Add(new Color(72, 77, 81));
+            steamColors.Add(new Color(54, 58, 61));
+            steamColors.Add(new Color(33, 36, 38));
+            steamColors.Add(new Color(20, 21, 22));
+            _colors.Add(MaterialType.Steam, steamColors);
         }
 
-        public static Color GetColor(MaterialType type)
+        public static Color GetColor(MaterialType type, int lifeTime)
         {
+            if (type == MaterialType.Fire)
+            {
+                var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.FireLifeTime, 0, _colors[type].Count);
+                return _colors[type][value];
+            }
+            else
+            if (type == MaterialType.Steam)
+            {
+                var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.SteamLifeTime, 0, _colors[type].Count);
+                return _colors[type][value];
+            }
+
             return _colors[type][_r.Next(0, _colors[type].Count)];
         }
     }

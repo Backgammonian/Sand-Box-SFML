@@ -101,74 +101,146 @@ namespace SandBoxSFML
             return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Water || _matrix[i, j].Type == MaterialType.Oil);
         }
 
-        public bool IsWaterNearby(int i, int j, out int iWater, out int jWater) //may particles become biased to go in particular direction?
+        public bool IsLiquidNearby(int i, int j, out int iNew, out int jNew)
         {
-            if (IsWater(i + 1, j))
+            if (IsLiquid(i + 1, j))
             {
-                iWater = i + 1;
-                jWater = j;
+                iNew = i + 1;
+                jNew = j;
 
                 return true;
             }
 
-            if (IsWater(i + 1, j + 1))
+            if (IsLiquid(i + 1, j + 1))
             {
-                iWater = i + 1;
-                jWater = j + 1;
+                iNew = i + 1;
+                jNew = j + 1;
 
                 return true;
             }
 
-            if (IsWater(i, j + 1))
+            if (IsLiquid(i, j + 1))
             {
-                iWater = i;
-                jWater = j + 1;
+                iNew = i;
+                jNew = j + 1;
 
                 return true;
             }
 
-            if (IsWater(i - 1, j))
+            if (IsLiquid(i - 1, j))
             {
-                iWater = i - 1;
-                jWater = j;
+                iNew = i - 1;
+                jNew = j;
 
                 return true;
             }
 
-            if (IsWater(i - 1, j - 1))
+            if (IsLiquid(i - 1, j - 1))
             {
-                iWater = i - 1;
-                jWater = j - 1;
+                iNew = i - 1;
+                jNew = j - 1;
 
                 return true;
             }
 
-            if (IsWater(i, j - 1))
+            if (IsLiquid(i, j - 1))
             {
-                iWater = i;
-                jWater = j - 1;
+                iNew = i;
+                jNew = j - 1;
 
                 return true;
             }
 
-            if (IsWater(i + 1, j - 1))
+            if (IsLiquid(i + 1, j - 1))
             {
-                iWater = i + 1;
-                jWater = j - 1;
+                iNew = i + 1;
+                jNew = j - 1;
 
                 return true;
             }
 
-            if (IsWater(i - 1, j + 1))
+            if (IsLiquid(i - 1, j + 1))
             {
-                iWater = i - 1;
-                jWater = j + 1;
+                iNew = i - 1;
+                jNew = j + 1;
 
                 return true;
             }
 
-            iWater = i;
-            jWater = j;
+            iNew = i;
+            jNew = j;
+
+            return false;
+        }
+
+        public bool IsElementNearby(int i, int j, MaterialType type, out int iNew, out int jNew)
+        {
+            if (IsWithihBounds(i + 1, j) && _matrix[i + 1, j].Type == type)
+            {
+                iNew = i + 1;
+                jNew = j;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i + 1, j + 1) && _matrix[i + 1, j + 1].Type == type)
+            {
+                iNew = i + 1;
+                jNew = j + 1;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i, j + 1) && _matrix[i, j + 1].Type == type)
+            {
+                iNew = i;
+                jNew = j + 1;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i - 1, j) && _matrix[i - 1, j].Type == type)
+            {
+                iNew = i - 1;
+                jNew = j;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i - 1, j - 1) && _matrix[i - 1, j - 1].Type == type)
+            {
+                iNew = i - 1;
+                jNew = j - 1;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i, j - 1) && _matrix[i, j - 1].Type == type)
+            {
+                iNew = i;
+                jNew = j - 1;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i + 1, j - 1) && _matrix[i + 1, j - 1].Type == type)
+            {
+                iNew = i + 1;
+                jNew = j - 1;
+
+                return true;
+            }
+
+            if (IsWithihBounds(i - 1, j + 1) && _matrix[i - 1, j + 1].Type == type)
+            {
+                iNew = i - 1;
+                jNew = j + 1;
+
+                return true;
+            }
+
+            iNew = i;
+            jNew = j;
 
             return false;
         }
@@ -242,7 +314,7 @@ namespace SandBoxSFML
             }
         }
 
-        public void Add(MaterialType type, Point location, Vector2f velocity)
+        public void Add(MaterialType type, Point location, Vector2 velocity)
         {
             if (type == MaterialType.Empty)
             {
@@ -255,7 +327,8 @@ namespace SandBoxSFML
             if (IsFree(i, j))
             {
                 _matrix[i, j].ChangeType(type);
-                _matrix[i, j].ChangeVelocity(velocity);
+                _matrix[i, j].Velocity.X = velocity.X;
+                _matrix[i, j].Velocity.Y = velocity.Y;
 
                 MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, _matrix[i, j].Color));
             }

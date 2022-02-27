@@ -31,6 +31,9 @@ namespace SandBoxSFML.UI
             AddButton(MaterialType.Sand);
             AddButton(MaterialType.Water);
             AddButton(MaterialType.Stone);
+            AddButton(MaterialType.Oil);
+            AddButton(MaterialType.Fire);
+            AddButton(MaterialType.Steam);
 
             for (int i = 0; i < _materialButtons.Count; i++)
             {
@@ -95,7 +98,7 @@ namespace SandBoxSFML.UI
             _materialButtons.Add(new ClickableRectangle(
                 new Vector2f(Position.X + 5, Position.Y + (_materialButtons.Count + 1) * 5 + _buttonHeight * _materialButtons.Count),
                 new Vector2f(_buttonWidth, _buttonHeight),
-                MaterialColor.GetColor(material),
+                MaterialColor.GetColor(material, 5),
                 material));
         }
 
