@@ -5,6 +5,13 @@ Simple 2D physics simulation based on cellular automata
 * Right click - erase
 ## Available materials
 * Sand
-* Water
+* Water (WIP)
 * Stone
+* Oil (WIP)
+* Fire
+* Steam
+* Smoke
+* Ember
+* Coal
+* Wood
 * TODO
