@@ -5,4 +5,6 @@ Simple 2D physics simulation based on cellular automata (SFML.NET)
 * Right click - erase
 ## Available materials
 * Sand
+* Water
+* Stone
 * TODO
