@@ -37,9 +37,9 @@ namespace SandBoxSFML.Materials
             _colors.Add(MaterialType.Stone, stoneColors);
 
             var oilColors = new ColorSamples();
-            oilColors.Add(new Color(20, 16, 14));
-            oilColors.Add(new Color(22, 18, 16));
-            oilColors.Add(new Color(15, 12, 10));
+            oilColors.Add(new Color(0, 90, 101));
+            oilColors.Add(new Color(0, 104, 109));
+            oilColors.Add(new Color(0, 82, 90));
             _colors.Add(MaterialType.Oil, oilColors);
 
             var fireColors = new ColorSamples();
@@ -81,7 +81,6 @@ namespace SandBoxSFML.Materials
             smokeColors.Add(new Color(112, 106, 92, 1));
             _colors.Add(MaterialType.Smoke, smokeColors);
 
-
             var emberColors = new ColorSamples();
             emberColors.Add(new Color(214, 148, 23));
             emberColors.Add(new Color(189, 54, 20));
@@ -99,6 +98,55 @@ namespace SandBoxSFML.Materials
             woodColors.Add(new Color(122, 75, 47));
             woodColors.Add(new Color(114, 70, 44));
             _colors.Add(MaterialType.Wood, woodColors);
+
+            var acidColors = new ColorSamples();
+            acidColors.Add(new Color(136, 241, 9));
+            acidColors.Add(new Color(130, 229, 9));
+            acidColors.Add(new Color(167, 201, 25));
+            _colors.Add(MaterialType.Acid, acidColors);
+
+            var lavaColors = new ColorSamples();
+            lavaColors.Add(new Color(234, 99, 8));
+            lavaColors.Add(new Color(216, 91, 8)); 
+            lavaColors.Add(new Color(233, 24, 0));
+            lavaColors.Add(new Color(235, 55, 11));
+            lavaColors.Add(new Color(196, 15, 30));
+            _colors.Add(MaterialType.Lava, lavaColors);
+
+            var titanColors = new ColorSamples();
+            titanColors.Add(new Color(210, 203, 214));
+            titanColors.Add(new Color(200, 193, 204));
+            titanColors.Add(new Color(190, 184, 193));
+            _colors.Add(MaterialType.Titan, titanColors);
+
+            var plantColors = new ColorSamples();
+            plantColors.Add(new Color(85, 162, 92));
+            plantColors.Add(new Color(93, 179, 100));
+            plantColors.Add(new Color(46, 100, 71));
+            plantColors.Add(new Color(50, 129, 82));
+            _colors.Add(MaterialType.Plant, plantColors);
+
+            var methaneColors = new ColorSamples();
+            methaneColors.Add(new Color(242, 214, 60, 128));
+            _colors.Add(MaterialType.Methane, methaneColors);
+
+            var ashColors = new ColorSamples();
+            ashColors.Add(new Color(133, 130, 117));
+            ashColors.Add(new Color(114, 112, 100));
+            ashColors.Add(new Color(95, 93, 84));
+            ashColors.Add(new Color(152, 149, 134));
+            _colors.Add(MaterialType.Ash, ashColors);
+
+            var iceColors = new ColorSamples();
+            iceColors.Add(new Color(231, 213, 222));
+            iceColors.Add(new Color(176, 220, 222));
+            iceColors.Add(new Color(127, 203, 205));
+            iceColors.Add(new Color(137, 220, 221));
+            _colors.Add(MaterialType.Ice, iceColors);
+
+            var obsidianColors = new ColorSamples();
+            obsidianColors.Add(new Color(137, 220, 221));
+            _colors.Add(MaterialType.Obsidian, obsidianColors);
         }
 
         public static Color GetColor(MaterialType type, int lifeTime)

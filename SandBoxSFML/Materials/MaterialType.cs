@@ -15,6 +15,11 @@
         Wood,
         Acid,
         Lava,
-        Titan
+        Titan,
+        Plant,
+        Methane,
+        Ash,
+        Ice,
+        Obsidian
     }
 }

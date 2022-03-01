@@ -19,32 +19,30 @@ namespace SandBoxSFML
 
         public static RenderWindow Window { get; private set; }
 
-        private static void Main(string[] args)
+        private static void Main()
         {
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
-            if (args.Length == 2 &&
-                uint.TryParse(args[0], out uint width) &&
-                uint.TryParse(args[1], out uint height))
-            {
-                _width = width;
-                _height = height;
-            }
-            else
-            {
-                _width = 800;
-                _height = 450;
-            }
-
+            _width = 800;
+            _height = 600;
+            
             _world = new World((int)_width, (int)_height);
 
             var font = new Font(Properties.Resources.Minecraft);
-            _ui = new SimpleUI(new Vector2f(5, 25), new Vector2f(40, 360), new Color(255, 255, 255, 50), font, new Vector2f(5, 5));
+            _ui = new SimpleUI(new Vector2f(5, 25), new Vector2f(40, 500), new Color(255, 255, 255, 50), font, new Vector2f(5, 5));
             _ui.MaterialChanged += OnUIMaterialChanged;
             _ui.SelectionRadiusChanged += OnUISelectionRadiusChanged;
 
             _ui.SetMaterial(MaterialType.Sand);
             _ui.SetRadius(10);
+
+            var colorTop = new Color(10, 10, 20);
+            var colorBottom = new Color(30, 20, 10);
+            var gradient = new Vertex[4];
+            gradient[0] = new Vertex(new Vector2f(0, 0), colorTop);
+            gradient[1] = new Vertex(new Vector2f(0, _height), colorBottom);
+            gradient[2] = new Vertex(new Vector2f(_width, _height), colorBottom);
+            gradient[3] = new Vertex(new Vector2f(_width, 0), colorTop);
 
             Window = new RenderWindow(new VideoMode(_width, _height), "SandBox", Styles.Close);
             Window.SetVerticalSyncEnabled(true);
@@ -71,6 +69,7 @@ namespace SandBoxSFML
                 _world.Update();
 
                 Window.Clear(Color.Black);
+                Window.Draw(gradient, PrimitiveType.Quads);
                 Window.Draw(_world);
                 Window.Draw(_ui);
 

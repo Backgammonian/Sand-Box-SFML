@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using SFML.Window;
-using SFML.System;
 using SFML.Graphics;
 using SandBoxSFML.Materials;
 
@@ -66,7 +65,7 @@ namespace SandBoxSFML
 
         private void Clear()
         {
-            _canvas.Clear(Color.Black);
+            _canvas.Clear(MaterialColor.GetColor(MaterialType.Empty, 0));
             _matrix.Initialize();
         }
 
