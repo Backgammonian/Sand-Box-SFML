@@ -40,7 +40,7 @@
 
             WoodIgnitionChance = 100;
             CoalIgnitionChance = 50;
-            OilIgnitionChance = 10;
+            OilIgnitionChance = 15;
             MethaneIgnitionChance = 1;
             PlantIgnitionChance = 20;
 

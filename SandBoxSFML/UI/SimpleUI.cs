@@ -46,6 +46,7 @@ namespace SandBoxSFML.UI
             AddButton(MaterialType.Methane, font);
             AddButton(MaterialType.BurningGas, font);
             AddButton(MaterialType.Ice, font);
+            AddButton(MaterialType.Plant, font);
 
             for (int i = 0; i < _materialButtons.Count; i++)
             {

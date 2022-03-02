@@ -938,10 +938,7 @@ namespace SandBoxSFML.Materials
                 }
 
                 if (Matrix.IsFree(point.X, point.Y) ||
-                    Matrix.IsWater(point.X, point.Y) ||
-                    Matrix.IsOil(point.X, point.Y) ||
-                    Matrix.IsFire(point.X, point.Y) ||
-                    Matrix.IsAcid(point.X, point.Y) ||
+                    Matrix.IsLiquid(point.X, point.Y) ||
                     Matrix.IsLava(point.X, point.Y))
                 {
                     validPoint = point;
@@ -965,10 +962,7 @@ namespace SandBoxSFML.Materials
             var cellAbove = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j - 1);
 
             if (Matrix.IsFree(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsWater(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsOil(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsFire(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsAcid(cellAbove.X, cellAbove.Y) ||
+                Matrix.IsLiquid(cellAbove.X, cellAbove.Y) ||
                 Matrix.IsLava(cellAbove.X, cellAbove.Y))
             {
                 Velocity.X += direction == Direction.Left ? -Constants.SteamSpreadSpeed : Constants.SteamSpreadSpeed;
@@ -1017,10 +1011,7 @@ namespace SandBoxSFML.Materials
                 }
 
                 if (Matrix.IsFree(point.X, point.Y) ||
-                    Matrix.IsWater(point.X, point.Y) ||
-                    Matrix.IsOil(point.X, point.Y) ||
-                    Matrix.IsAcid(point.X, point.Y) ||
-                    Matrix.IsFire(point.X, point.Y) ||
+                    Matrix.IsLiquid(point.X, point.Y) ||
                     Matrix.IsLava(point.X, point.Y) ||
                     Matrix.IsAsh(point.X, point.Y))
                 {
@@ -1045,10 +1036,7 @@ namespace SandBoxSFML.Materials
             var cellAbove = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j - 1);
 
             if (Matrix.IsFree(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsWater(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsOil(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsFire(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsAcid(cellAbove.X, cellAbove.Y) ||
+                Matrix.IsLiquid(cellAbove.X, cellAbove.Y) ||
                 Matrix.IsLava(cellAbove.X, cellAbove.Y) ||
                 Matrix.IsAsh(cellAbove.X, cellAbove.Y))
             {
