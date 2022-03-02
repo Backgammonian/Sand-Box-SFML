@@ -127,8 +127,24 @@ namespace SandBoxSFML.Materials
             _colors.Add(MaterialType.Plant, plantColors);
 
             var methaneColors = new ColorSamples();
-            methaneColors.Add(new Color(242, 214, 60, 100));
+            methaneColors.Add(new Color(242, 214, 60, 70));
+            methaneColors.Add(new Color(242, 214, 60, 60));
+            methaneColors.Add(new Color(242, 214, 60, 80));
             _colors.Add(MaterialType.Methane, methaneColors);
+
+            var burningGasColors = new ColorSamples();
+            burningGasColors.Add(new Color(221, 245, 253));
+            burningGasColors.Add(new Color(194, 227, 242));
+            burningGasColors.Add(new Color(178, 220, 236));
+            burningGasColors.Add(new Color(158, 228, 254));
+            burningGasColors.Add(new Color(122, 214, 251));
+            burningGasColors.Add(new Color(93, 199, 247));
+            burningGasColors.Add(new Color(72, 189, 243));
+            burningGasColors.Add(new Color(58, 157, 215));
+            burningGasColors.Add(new Color(47, 133, 194));
+            burningGasColors.Add(new Color(33, 95, 158));
+            burningGasColors.Add(new Color(7, 30, 80));
+            _colors.Add(MaterialType.BurningGas, burningGasColors);
 
             var ashColors = new ColorSamples();
             ashColors.Add(new Color(133, 130, 117));
@@ -170,6 +186,12 @@ namespace SandBoxSFML.Materials
             if (type == MaterialType.Smoke)
             {
                 var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.SmokeLifeTime, 0, _colors[type].Count - 1);
+                return _colors[type][value];
+            }
+            else
+            if (type == MaterialType.BurningGas)
+            {
+                var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.BurningGasLifeTime, 0, _colors[type].Count - 1);
                 return _colors[type][value];
             }
 

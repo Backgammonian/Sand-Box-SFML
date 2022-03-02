@@ -6,6 +6,7 @@
         {
             Gravity = 1;
             AshGravity = Gravity / 8.0f;
+            MethaneGravity = Gravity * 2;
 
             MaxRadius = 100;
 
@@ -13,7 +14,9 @@
             OilSpreadRate = 5;
             AcidSpreadRate = 8;
             LavaSpreadRate = 2;
+            MethaneSpreadRate = 5;
             FireSpreadChance = 4;
+            BurningGasSpreadChance = 2;
             SteamSpreadSpeed = 1.3f;
             SmokeSpreadSpeed = 1.1f;
 
@@ -22,13 +25,16 @@
             SmokeLifeTime = 160;
             EmberLifeTime = 200;
             LavaLifeTime = 1500;
+            BurningGasLifeTime = 120;
 
             SmokeSpawnChance = 20;
+            SteamSpawnChance = 25;
             EmberSpawnChance = 50;
+            AshSpawnChance = 5;
             LavaSpawnsSmokeChance = 200;
             LavaSpawnsEmberChance = 300;
-            SteamCondencesChance = 20;
-            SmokeCondencesChance = 100;
+            SteamCondencesChance = 100;
+            SmokeCondencesChance = 150;
             LavaMeltsStoneChance = 70;
             LavaMeltsSandChance = 40;
 
@@ -49,11 +55,16 @@
             AcidMeltsPlantChance = 10;
             AcidMeltsAshChance = 10;
             AcidMeltsObsidianChance = 100;
+            AcidMeltsIceChance = 150;
             AcidDissolvesInWaterChance = 40;
+
+            IceFreezesWaterChance = 20;
+            IceMeltsFromHeatChance = 10;
     }
 
         public static float Gravity { get; }
         public static float AshGravity { get; }
+        public static float MethaneGravity { get; }
 
         public static int MaxRadius { get; }
 
@@ -61,7 +72,9 @@
         public static int OilSpreadRate { get; }
         public static int AcidSpreadRate { get; }
         public static int LavaSpreadRate { get; }
+        public static int MethaneSpreadRate { get; }
         public static int FireSpreadChance { get; }
+        public static int BurningGasSpreadChance { get; }
         public static float SteamSpreadSpeed { get; }
         public static float SmokeSpreadSpeed { get; }
 
@@ -70,9 +83,12 @@
         public static int SmokeLifeTime { get; }
         public static int EmberLifeTime { get; }
         public static int LavaLifeTime { get; }
+        public static int BurningGasLifeTime { get; }
 
         public static int SmokeSpawnChance { get; }
+        public static int SteamSpawnChance { get; }
         public static int EmberSpawnChance { get; }
+        public static int AshSpawnChance { get; }
         public static int LavaSpawnsSmokeChance { get; }
         public static int LavaSpawnsEmberChance { get; }
         public static int SteamCondencesChance { get; }
@@ -97,6 +113,10 @@
         public static int AcidMeltsPlantChance { get; }
         public static int AcidMeltsAshChance { get; }
         public static int AcidMeltsObsidianChance { get; }
+        public static int AcidMeltsIceChance { get; }
         public static int AcidDissolvesInWaterChance { get; }
+
+        public static int IceFreezesWaterChance { get; }
+        public static int IceMeltsFromHeatChance { get; }
     }
 }

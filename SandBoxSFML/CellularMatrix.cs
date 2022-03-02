@@ -131,6 +131,11 @@ namespace SandBoxSFML
             return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Water || _matrix[i, j].Type == MaterialType.Oil || _matrix[i, j].Type == MaterialType.Acid);
         }
 
+        public bool IsMovableSolid(int i, int j)
+        {
+            return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Sand || _matrix[i, j].Type == MaterialType.Coal || _matrix[i, j].Type == MaterialType.Ash || _matrix[i, j].Type == MaterialType.Ember || _matrix[i, j].Type == MaterialType.Fire);
+        }
+
         public bool IsLiquidNearby(int i, int j, out int iNew, out int jNew)
         {
             var h = Utils.NextBoolean() ? -1 : 1;

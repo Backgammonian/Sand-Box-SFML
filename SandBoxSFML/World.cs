@@ -148,7 +148,8 @@ namespace SandBoxSFML
             if (SelectedMaterial == MaterialType.Stone ||
                 SelectedMaterial == MaterialType.Wood ||
                 SelectedMaterial == MaterialType.Titan ||
-                SelectedMaterial == MaterialType.Obsidian)
+                SelectedMaterial == MaterialType.Obsidian || 
+                SelectedMaterial == MaterialType.Ice)
             {
                 var R = (int)SelectionRadius;
                 for (var i = -R; i <= R; i++)

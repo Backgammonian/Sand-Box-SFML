@@ -18,8 +18,9 @@
         Titan,
         Obsidian,
         Ash,
-        Plant, //flammable
         Methane, //flammable
-        Ice
+        BurningGas,
+        Ice,
+        Plant //flammable
     }
 }
