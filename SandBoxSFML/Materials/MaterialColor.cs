@@ -127,7 +127,7 @@ namespace SandBoxSFML.Materials
             _colors.Add(MaterialType.Plant, plantColors);
 
             var methaneColors = new ColorSamples();
-            methaneColors.Add(new Color(242, 214, 60, 128));
+            methaneColors.Add(new Color(242, 214, 60, 100));
             _colors.Add(MaterialType.Methane, methaneColors);
 
             var ashColors = new ColorSamples();
@@ -145,7 +145,11 @@ namespace SandBoxSFML.Materials
             _colors.Add(MaterialType.Ice, iceColors);
 
             var obsidianColors = new ColorSamples();
-            obsidianColors.Add(new Color(137, 220, 221));
+            obsidianColors.Add(new Color(37, 0, 35));
+            obsidianColors.Add(new Color(31, 18, 53));
+            obsidianColors.Add(new Color(2, 9, 15));
+            obsidianColors.Add(new Color(58, 50, 71));
+            obsidianColors.Add(new Color(3, 1, 33));
             _colors.Add(MaterialType.Obsidian, obsidianColors);
         }
 

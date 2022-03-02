@@ -6,20 +6,20 @@
         Sand, 
         Water,
         Stone, 
-        Oil, 
+        Oil, //flammable
         Fire, 
         Steam,
         Smoke, 
         Ember, 
-        Coal, 
-        Wood,
+        Coal, //flammable
+        Wood, //flammable
         Acid,
         Lava,
         Titan,
-        Plant,
-        Methane,
+        Obsidian,
         Ash,
-        Ice,
-        Obsidian
+        Plant, //flammable
+        Methane, //flammable
+        Ice
     }
 }

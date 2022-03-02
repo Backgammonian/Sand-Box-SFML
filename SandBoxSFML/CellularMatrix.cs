@@ -116,6 +116,16 @@ namespace SandBoxSFML
             return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Acid;
         }
 
+        public bool IsLava(int i, int j)
+        {
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Lava;
+        }
+
+        public bool IsAsh(int i, int j)
+        {
+            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Ash;
+        }
+
         public bool IsLiquid(int i, int j)
         {
             return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Water || _matrix[i, j].Type == MaterialType.Oil || _matrix[i, j].Type == MaterialType.Acid);
@@ -317,6 +327,56 @@ namespace SandBoxSFML
             }
 
             return true;
+        }
+
+        public int CountNeighborElements(int i, int j, MaterialType type)
+        {
+            var count = 0;
+
+            var h = Utils.NextBoolean() ? -1 : 1;
+            var v = Utils.NextBoolean() ? -1 : 1;
+
+            if (IsWithihBounds(i + h, j + v) && _matrix[i + h, j + v].Type == type)
+            {
+                count += 1;
+            }
+
+            if (IsWithihBounds(i - h, j - v) && _matrix[i - h, j - v].Type == type)
+            {
+                count += 1;
+            }
+
+            if (IsWithihBounds(i + h, j - v) && _matrix[i + h, j - v].Type == type)
+            {
+                count += 1;
+            }
+
+            if (IsWithihBounds(i - h, j + v) && _matrix[i - h, j + v].Type == type)
+            {
+                count += 1;
+            }
+
+            if (IsWithihBounds(i + h, j) && _matrix[i + h, j].Type == type)
+            {
+                count += 1;
+            }
+
+            if (IsWithihBounds(i, j + v) && _matrix[i, j + v].Type == type)
+            {
+                count += 1;
+            }
+
+            if (IsWithihBounds(i - h, j) && _matrix[i - h, j].Type == type)
+            {
+                count += 1;
+            }
+
+            if (IsWithihBounds(i, j - v) && _matrix[i, j - v].Type == type)
+            {
+                count += 1;
+            }
+
+            return count;
         }
 
         public void Swap(int i1, int j1, int i2, int j2)

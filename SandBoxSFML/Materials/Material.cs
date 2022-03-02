@@ -33,6 +33,9 @@ namespace SandBoxSFML.Materials
                 case MaterialType.Titan:
                     break;
 
+                case MaterialType.Obsidian:
+                    break;
+
                 case MaterialType.Sand:
                     Velocity = new Vector2(0, Constants.Gravity);
                     IsMovable = true;
@@ -85,6 +88,11 @@ namespace SandBoxSFML.Materials
                     Velocity = new Vector2(0, Constants.Gravity);
                     IsMovable = true;
                     SpreadRate = Constants.LavaSpreadRate;
+                    break;
+
+                case MaterialType.Ash:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
                     break;
             }
         }
@@ -186,6 +194,18 @@ namespace SandBoxSFML.Materials
                     IsMovable = true;
                     SpreadRate = Constants.LavaSpreadRate;
                     break;
+
+                case MaterialType.Obsidian:
+                    Velocity = new Vector2(0, 0);
+                    IsMovable = false;
+                    SpreadRate = 0;
+                    break;
+
+                case MaterialType.Ash:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
+                    SpreadRate = 0;
+                    break;
             }
         }
 
@@ -216,6 +236,10 @@ namespace SandBoxSFML.Materials
                     Type == MaterialType.Methane)
                 {
                     Velocity.Y -= Constants.Gravity;
+                }
+                else if (Type == MaterialType.Ash)
+                {
+                    Velocity.Y += Constants.AshGravity;
                 }
                 else
                 {
@@ -263,6 +287,10 @@ namespace SandBoxSFML.Materials
 
                 case MaterialType.Lava:
                     UpdateLava(i, j);
+                    break;
+
+                case MaterialType.Ash:
+                    UpdateAsh(i, j);
                     break;
             }
 
@@ -507,6 +535,14 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
+            if (Matrix.IsElementNearby(i, j, MaterialType.Oil, out int iLiquid, out int jLiquid) &&
+                Utils.RandomValue(0, 20) == 0)
+            {
+                Matrix.Swap(iLiquid, jLiquid, i, j);
+
+                return;
+            }
+
             Velocity.Y /= 2.0f;
         }
 
@@ -709,6 +745,56 @@ namespace SandBoxSFML.Materials
                 }
             }
 
+            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iPlant, out int jPlant) &&
+                Utils.RandomValue(0, Constants.PlantIgnitionChance) == 0)
+            {
+                Matrix.Erase(iPlant, jPlant);
+                Matrix.Add(MaterialType.Fire, iPlant, jPlant);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Methane, out int iMethane, out int jMethane) &&
+                Utils.RandomValue(0, Constants.MethaneIgnitionChance) == 0)
+            {
+                Matrix.Erase(iMethane, jMethane);
+                Matrix.Add(MaterialType.Fire, iMethane, jMethane);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
             var vX = (int)(i + Velocity.X);
             var vY = (int)(j + Velocity.Y);
 
@@ -798,7 +884,8 @@ namespace SandBoxSFML.Materials
                     Matrix.IsWater(point.X, point.Y) ||
                     Matrix.IsOil(point.X, point.Y) ||
                     Matrix.IsFire(point.X, point.Y) ||
-                    Matrix.IsAcid(point.X, point.Y))
+                    Matrix.IsAcid(point.X, point.Y) ||
+                    Matrix.IsLava(point.X, point.Y))
                 {
                     validPoint = point;
                 }
@@ -824,10 +911,20 @@ namespace SandBoxSFML.Materials
                 Matrix.IsWater(cellAbove.X, cellAbove.Y) ||
                 Matrix.IsOil(cellAbove.X, cellAbove.Y) ||
                 Matrix.IsFire(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsAcid(cellAbove.X, cellAbove.Y))
+                Matrix.IsAcid(cellAbove.X, cellAbove.Y) ||
+                Matrix.IsLava(cellAbove.X, cellAbove.Y))
             {
                 Velocity.X += direction == Direction.Left ? -Constants.SteamSpreadSpeed : Constants.SteamSpreadSpeed;
                 Matrix.Swap(cellAbove.X, cellAbove.Y, i, j);
+
+                return;
+            }
+
+            if (Matrix.CountNeighborElements(i, j, MaterialType.Steam) >= 8 &&
+                Utils.RandomValue(0, Constants.SteamCondencesChance) == 0)
+            {
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Water, i, j);
 
                 return;
             }
@@ -865,7 +962,10 @@ namespace SandBoxSFML.Materials
                 if (Matrix.IsFree(point.X, point.Y) ||
                     Matrix.IsWater(point.X, point.Y) ||
                     Matrix.IsOil(point.X, point.Y) ||
-                    Matrix.IsAcid(point.X, point.Y))
+                    Matrix.IsAcid(point.X, point.Y) ||
+                    Matrix.IsFire(point.X, point.Y) ||
+                    Matrix.IsLava(point.X, point.Y) ||
+                    Matrix.IsAsh(point.X, point.Y))
                 {
                     validPoint = point;
                 }
@@ -891,10 +991,21 @@ namespace SandBoxSFML.Materials
                 Matrix.IsWater(cellAbove.X, cellAbove.Y) ||
                 Matrix.IsOil(cellAbove.X, cellAbove.Y) ||
                 Matrix.IsFire(cellAbove.X, cellAbove.Y) ||
-                Matrix.IsAcid(cellAbove.X, cellAbove.Y))
+                Matrix.IsAcid(cellAbove.X, cellAbove.Y) ||
+                Matrix.IsLava(cellAbove.X, cellAbove.Y) ||
+                Matrix.IsAsh(cellAbove.X, cellAbove.Y))
             {
                 Velocity.X += direction == Direction.Left ? -Constants.SmokeSpreadSpeed : Constants.SmokeSpreadSpeed;
                 Matrix.Swap(cellAbove.X, cellAbove.Y, i, j);
+
+                return;
+            }
+
+            if (Matrix.CountNeighborElements(i, j, MaterialType.Smoke) >= 8 &&
+                Utils.RandomValue(0, Constants.SmokeCondencesChance) == 0)
+            {
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Ash, i, j);
 
                 return;
             }
@@ -907,6 +1018,7 @@ namespace SandBoxSFML.Materials
             if (LifeTime > Constants.EmberLifeTime)
             {
                 Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Ash, i, j);
 
                 return;
             }
@@ -934,6 +1046,34 @@ namespace SandBoxSFML.Materials
             {
                 Matrix.Erase(iWood, jWood);
                 Matrix.Add(MaterialType.Fire, iWood, jWood);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Coal, out int iCoal, out int jCoal) &&
+                Utils.RandomValue(0, Constants.CoalIgnitionChance) == 0)
+            {
+                Matrix.Erase(iCoal, jCoal);
+                Matrix.Add(MaterialType.Fire, iCoal, jCoal);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Oil, out int iOil, out int jOil) &&
+                Utils.RandomValue(0, Constants.OilIgnitionChance) == 0)
+            {
+                Matrix.Erase(iOil, jOil);
+                Matrix.Add(MaterialType.Fire, iOil, jOil);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iPlant, out int jPlant) &&
+                Utils.RandomValue(0, Constants.PlantIgnitionChance) == 0)
+            {
+                Matrix.Erase(iPlant, jPlant);
+                Matrix.Add(MaterialType.Fire, iPlant, jPlant);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Methane, out int iMethane, out int jMethane) &&
+                Utils.RandomValue(0, Constants.MethaneIgnitionChance) == 0)
+            {
+                Matrix.Erase(iMethane, jMethane);
+                Matrix.Add(MaterialType.Fire, iMethane, jMethane);
             }
 
             var vX = (int)(i + Velocity.X);
@@ -1100,6 +1240,13 @@ namespace SandBoxSFML.Materials
                 Matrix.Swap(i, j, iAsh, jAsh);
             }
 
+            if (Matrix.IsElementNearby(i, j, MaterialType.Obsidian, out int iObsidian, out int jObsidian) &&
+                Utils.RandomValue(0, Constants.AcidMeltsObsidianChance) == 0)
+            {
+                Matrix.Erase(iObsidian, jObsidian);
+                Matrix.Swap(i, j, iObsidian, jObsidian);
+            }
+
             var vX = (int)(i + Velocity.X);
             var vY = (int)(j + Velocity.Y);
 
@@ -1168,7 +1315,383 @@ namespace SandBoxSFML.Materials
 
         private void UpdateLava(int i, int j)
         {
+            if (LifeTime > Constants.LavaLifeTime)
+            {
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Obsidian, i, j);
+
+                return;
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Water, out int iWater, out int jWater) && 
+                Utils.RandomValue(0, 1) == 0)
+            {
+                var regionHeight = Utils.RandomValue(-Constants.SteamRegionHeight, Constants.SteamRegionHeight);
+                var regionWidth = Utils.RandomValue(-Constants.SteamRegionWidth, Constants.SteamRegionWidth);
+                var r1 = Utils.NextBoolean();
+                var r2 = Utils.NextBoolean();
+                for (int n = r1 ? regionHeight : -regionHeight; r1 ? n < Constants.SteamRegionHeight : n > Constants.SteamRegionHeight; n += r1 ? 1 : -1)
+                {
+                    for (int m = r2 ? regionWidth : -regionWidth; r2 ? m < Constants.SteamRegionWidth : m > Constants.SteamRegionWidth; m += r2 ? 1 : -1)
+                    {
+                        Matrix.Add(MaterialType.Steam, i + m, j + n);
+                    }
+                }
+
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Steam, i, j);
+                Matrix.Erase(iWater, jWater);
+                Matrix.Add(MaterialType.Stone, iWater, jWater);
+
+                return;
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Acid, out int iAcid, out int jAcid) &&
+                Utils.RandomValue(0, 1) == 0)
+            {
+                var regionHeight = Utils.RandomValue(-Constants.SmokeRegionHeight, Constants.SmokeRegionHeight);
+                var regionWidth = Utils.RandomValue(-Constants.SmokeRegionWidth, Constants.SmokeRegionWidth);
+                var r1 = Utils.NextBoolean();
+                var r2 = Utils.NextBoolean();
+                for (int n = r1 ? regionHeight : -regionHeight; r1 ? n < Constants.SmokeRegionHeight : n > Constants.SmokeRegionHeight; n += r1 ? 1 : -1)
+                {
+                    for (int m = r2 ? regionWidth : -regionWidth; r2 ? m < Constants.SmokeRegionWidth : m > Constants.SmokeRegionWidth; m += r2 ? 1 : -1)
+                    {
+                        Matrix.Add(MaterialType.Smoke, i + m, j + n);
+                    }
+                }
+
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Smoke, i, j);
+                Matrix.Erase(iAcid, jAcid);
+                Matrix.Add(MaterialType.Stone, iAcid, jAcid);
+
+                return;
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Stone, out int iStone, out int jStone) &&
+                Utils.RandomValue(0, Constants.LavaMeltsStoneChance) == 0)
+            {
+                LifeTime += 50;
+                Matrix.Erase(iStone, jStone);
+                Matrix.Add(MaterialType.Lava, iStone, jStone);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Sand, out int iSand, out int jSand) &&
+                Utils.RandomValue(0, Constants.LavaMeltsSandChance) == 0)
+            {
+                LifeTime += 30;
+                Matrix.Erase(iSand, jSand);
+                Matrix.Add(MaterialType.Obsidian, iSand, jSand);
+            }
+
+            for (int k = 0; k < Utils.RandomValue(1, 10); k++)
+            {
+                if (Utils.RandomValue(0, Constants.LavaSpawnsSmokeChance) == 0)
+                {
+                    if (Matrix.IsFree(i, j - 1))
+                    {
+                        Matrix.Add(MaterialType.Smoke, i, j - 1);
+                    }
+                }
+
+                if (Utils.RandomValue(0, Constants.LavaSpawnsSmokeChance) == 0)
+                {
+                    if (Matrix.IsFree(i + 1, j - 1))
+                    {
+                        Matrix.Add(MaterialType.Smoke, i + 1, j - 1);
+                    }
+                }
+
+                if (Utils.RandomValue(0, Constants.LavaSpawnsSmokeChance) == 0)
+                {
+                    if (Matrix.IsFree(i - 1, j - 1))
+                    {
+                        Matrix.Add(MaterialType.Smoke, i - 1, j - 1);
+                    }
+                }
+            }
             
+            if (Utils.RandomValue(0, Constants.LavaSpawnsEmberChance) == 0 &&
+                LifeTime < Constants.LavaLifeTime / 3)
+            {
+                if (Matrix.IsFree(i, j - 1))
+                {
+                    Matrix.Add(MaterialType.Ember, i, j - 1, new Vector2(0, Utils.RandomValue(-10, 0)));
+                }
+            }
+
+            if (Utils.RandomValue(0, Constants.LavaSpawnsEmberChance) == 0 &&
+                LifeTime < Constants.LavaLifeTime / 3)
+            {
+                if (Matrix.IsFree(i + 1, j - 1))
+                {
+                    Matrix.Add(MaterialType.Ember, i + 1, j - 1, new Vector2(0, Utils.RandomValue(-10, 0)));
+                }
+            }
+
+            if (Utils.RandomValue(0, Constants.LavaSpawnsEmberChance) == 0 &&
+                LifeTime < Constants.LavaLifeTime / 3)
+            {
+                if (Matrix.IsFree(i - 1, j - 1))
+                {
+                    Matrix.Add(MaterialType.Ember, i - 1, j - 1, new Vector2(0, Utils.RandomValue(-10, 0)));
+                }
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Oil, out int iOil, out int jOil) &&
+                Utils.RandomValue(0, Constants.OilIgnitionChance) == 0)
+            {
+                Matrix.Erase(iOil, jOil);
+                Matrix.Add(MaterialType.Fire, iOil, jOil);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Coal, out int iCoal, out int jCoal) &&
+                Utils.RandomValue(0, Constants.CoalIgnitionChance) == 0)
+            {
+                Matrix.Erase(iCoal, jCoal);
+                Matrix.Add(MaterialType.Fire, iCoal, jCoal);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Wood, out int iWood, out int jWood) &&
+                Utils.RandomValue(0, Constants.WoodIgnitionChance) == 0)
+            {
+                Matrix.Erase(iWood, jWood);
+                Matrix.Add(MaterialType.Fire, iWood, jWood);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Methane, out int iMethane, out int jMethane) &&
+                Utils.RandomValue(0, Constants.MethaneIgnitionChance) == 0)
+            {
+                Matrix.Erase(iMethane, jMethane);
+                Matrix.Add(MaterialType.Fire, iMethane, jMethane);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iPlant, out int jPlant) &&
+                Utils.RandomValue(0, Constants.PlantIgnitionChance) == 0)
+            {
+                Matrix.Erase(iPlant, jPlant);
+                Matrix.Add(MaterialType.Fire, iPlant, jPlant);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            var vX = (int)(i + Velocity.X);
+            var vY = (int)(j + Velocity.Y);
+
+            Point? validPoint = null;
+
+            CalculateTrajectory(i, j, vX, vY);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
+            var spreadRate = Utils.NextBoolean() ? SpreadRate : -SpreadRate;
+
+            CalculateTrajectory(i, j, i + spreadRate, j);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y) ||
+                    Matrix.IsOil(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Lava, out int iNew, out int jNew) &&
+                Utils.RandomValue(0, 40) == 0)
+            {
+                Matrix.Swap(iNew, jNew, i, j);
+
+                return;
+            }
+
+            Velocity.Y /= 2.0f;
+        }
+
+        private void UpdateAsh(int i, int j)
+        {
+            var vX = (int)(i + Velocity.X);
+            var vY = (int)(j + Velocity.Y);
+
+            Point? validPoint = null;
+
+            CalculateTrajectory(i, j, vX, vY);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
+            var random = Utils.Next(0, 100);
+            var direction = random < 50 ? Direction.Right : Direction.Left;
+            var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
+
+            if (Matrix.IsFree(cellBelow.X, cellBelow.Y))
+            {
+                Matrix.Swap(cellBelow.X, cellBelow.Y, i, j);
+
+                return;
+            }
+
+            if (Matrix.IsLiquidNearby(i, j, out int iLiquid, out int jLiquid) &&
+                Utils.RandomValue(0, 1) == 0)
+            {
+                Matrix.Swap(iLiquid, jLiquid, i, j);
+
+                return;
+            }
 
             Velocity.Y /= 2.0f;
         }
