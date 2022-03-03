@@ -21,6 +21,9 @@
         Methane, //flammable
         BurningGas,
         Ice,
-        Plant //flammable
+        Plant, //flammable
+        Dirt,
+        Seed, //flammable
+        Virus
     }
 }

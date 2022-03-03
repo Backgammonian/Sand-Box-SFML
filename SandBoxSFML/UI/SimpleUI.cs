@@ -16,7 +16,7 @@ namespace SandBoxSFML.UI
         private int? _previousButtonIndex;
         private float _selectionRadius;
         private MaterialType _selectedMaterial;
-        private const int _buttonWidth = 30;
+        private const int _buttonWidth = 70;
         private const int _buttonHeight = 30;
         private readonly Text _materialPreview;
         private readonly List<Text> _materialIcons;
@@ -46,7 +46,9 @@ namespace SandBoxSFML.UI
             AddButton(MaterialType.Methane, font);
             AddButton(MaterialType.BurningGas, font);
             AddButton(MaterialType.Ice, font);
-            AddButton(MaterialType.Plant, font);
+            AddButton(MaterialType.Dirt, font);
+            AddButton(MaterialType.Seed, font);
+            AddButton(MaterialType.Virus, font);
 
             for (int i = 0; i < _materialButtons.Count; i++)
             {
@@ -119,10 +121,12 @@ namespace SandBoxSFML.UI
                 material));
 
             var materialIcon = new Text();
-            materialIcon.DisplayedString = material.ToString().Substring(0, 2) + ".";
+            var name = material.ToString();
+            materialIcon.DisplayedString = name.Length > 8 ? name.Substring(0, 7) + "." : name;
             materialIcon.Font = font;
             materialIcon.CharacterSize = 16;
-            materialIcon.FillColor = Utils.InvertColor(MaterialColor.GetColor(material, 0));
+            //materialIcon.FillColor = Utils.InvertColor(MaterialColor.GetColor(material, 0));
+            materialIcon.FillColor = new Color(240, 240, 240);
             materialIcon.OutlineColor = Color.Black;
             materialIcon.OutlineThickness = 1;
             materialIcon.Position = new Vector2f(position.X + 2, position.Y + 2);

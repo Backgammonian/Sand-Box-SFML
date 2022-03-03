@@ -39,9 +39,13 @@ namespace SandBoxSFML.Materials
                 case MaterialType.Ice:
                     break;
 
+                case MaterialType.Plant:
+                    break;
+
                 case MaterialType.Sand:
                     Velocity = new Vector2(0, Constants.Gravity);
                     IsMovable = true;
+                    SpreadRate = Constants.SandSpreadRate;
                     break;
 
                 case MaterialType.Water:
@@ -109,6 +113,21 @@ namespace SandBoxSFML.Materials
                     IsMovable = true;
                     SpreadRate = Constants.MethaneSpreadRate;
                     break;
+
+                case MaterialType.Dirt:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
+                    break;
+
+                case MaterialType.Seed:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
+                    break;
+
+                case MaterialType.Virus:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
+                    break;
             }
         }
 
@@ -125,6 +144,7 @@ namespace SandBoxSFML.Materials
             Type = newType;
             LifeTime = 0;
             Color = MaterialColor.GetColor(Type, LifeTime);
+
             switch (Type)
             {
                 case MaterialType.Empty:
@@ -136,7 +156,7 @@ namespace SandBoxSFML.Materials
                 case MaterialType.Sand:
                     Velocity = new Vector2(0, Constants.Gravity);
                     IsMovable = true;
-                    SpreadRate = 0;
+                    SpreadRate = Constants.SandSpreadRate;
                     break;
 
                 case MaterialType.Water:
@@ -239,6 +259,29 @@ namespace SandBoxSFML.Materials
                     IsMovable = false;
                     SpreadRate = 0;
                     break;
+
+                case MaterialType.Dirt:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
+                    SpreadRate = 0;
+                    break;
+
+                case MaterialType.Seed:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
+                    SpreadRate = 0;
+                    break;
+
+                case MaterialType.Plant:
+                    Velocity = new Vector2(0, 0);
+                    IsMovable = false;
+                    SpreadRate = 0;
+                    break;
+
+                case MaterialType.Virus:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
+                    break;
             }
         }
 
@@ -267,16 +310,13 @@ namespace SandBoxSFML.Materials
                 if (Type == MaterialType.Steam ||
                     Type == MaterialType.Smoke)
                 {
-                    Velocity.Y -= Constants.Gravity;
+                    Velocity.Y += Constants.GasGravity;
                 }
-                else if (Type == MaterialType.Ash)
-                {
-                    Velocity.Y += Constants.AshGravity;
-                }
-                else if (Type == MaterialType.Methane ||
+                else 
+                if (Type == MaterialType.Methane ||
                     Type == MaterialType.BurningGas)
                 {
-                    Velocity.Y -= Constants.MethaneGravity;
+                    Velocity.Y += Constants.MethaneGravity;
                 }
                 else
                 {
@@ -340,6 +380,22 @@ namespace SandBoxSFML.Materials
 
                 case MaterialType.Ice:
                     UpdateIce(i, j);
+                    break;
+
+                case MaterialType.Dirt:
+                    UpdateDirt(i, j);
+                    break;
+
+                case MaterialType.Seed:
+                    UpdateSeed(i, j);
+                    break;
+
+                case MaterialType.Plant:
+                    UpdatePlant(i, j);
+                    break;
+
+                case MaterialType.Virus:
+                    UpdateVirus(i, j);
                     break;
             }
 
@@ -417,6 +473,38 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
+            var spreadRate = Utils.NextBoolean() ? SpreadRate : -SpreadRate;
+
+            CalculateTrajectory(i, j, i + spreadRate, j + 1);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y) ||
+                    Matrix.IsWater(point.X, point.Y) ||
+                    Matrix.IsAcid(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
             var random = Utils.Next(0, 100);
             var direction = random < 50 ? Direction.Right : Direction.Left;
             var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
@@ -443,6 +531,15 @@ namespace SandBoxSFML.Materials
 
         private void UpdateWater(int i, int j)
         {
+            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iNew2, out int jNew2) &&
+                Utils.RandomValue(0, Constants.PlantGrowthChance) == 0)
+            {
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Plant, i, j);
+
+                return;
+            }
+
             var vX = (int)(i + Velocity.X);
             var vY = (int)(j + Velocity.Y);
 
@@ -1226,20 +1323,6 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            var random = Utils.Next(0, 100);
-            var direction = random < 50 ? Direction.Right : Direction.Left;
-            var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
-
-            if (Matrix.IsFree(cellBelow.X, cellBelow.Y) ||
-                Matrix.IsWater(cellBelow.X, cellBelow.Y) ||
-                Matrix.IsOil(cellBelow.X, cellBelow.Y) ||
-                Matrix.IsAcid(cellBelow.X, cellBelow.Y))
-            {
-                Matrix.Swap(cellBelow.X, cellBelow.Y, i, j);
-
-                return;
-            }
-
             if (Matrix.IsLiquidNearby(i, j, out int iLiquid, out int jLiquid) &&
                 Utils.RandomValue(0, 10) == 0)
             {
@@ -1276,11 +1359,12 @@ namespace SandBoxSFML.Materials
                 Matrix.Swap(i, j, iWood, jWood);
             }
 
-            if (Matrix.IsElementNearby(i, j, MaterialType.Sand, out int iSand, out int jSand) &&
-                Utils.RandomValue(0, Constants.AcidMeltsSandChance) == 0)
+            if (Matrix.IsElementNearby(i, j, MaterialType.Dirt, out int iDirt, out int jDirt) &&
+                Utils.RandomValue(0, Constants.AcidMakesSandFromDirtChance) == 0)
             {
-                Matrix.Erase(iSand, jSand);
-                Matrix.Swap(i, j, iSand, jSand);
+                Matrix.Erase(iDirt, jDirt);
+                Matrix.Add(MaterialType.Sand, iDirt, jDirt);
+                Matrix.Swap(i, j, iDirt, jDirt);
             }
 
             if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iPlant, out int jPlant) &&
@@ -1453,9 +1537,17 @@ namespace SandBoxSFML.Materials
             if (Matrix.IsElementNearby(i, j, MaterialType.Sand, out int iSand, out int jSand) &&
                 Utils.RandomValue(0, Constants.LavaMeltsSandChance) == 0)
             {
-                LifeTime += 30;
+                LifeTime += 20;
                 Matrix.Erase(iSand, jSand);
                 Matrix.Add(MaterialType.Obsidian, iSand, jSand);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Dirt, out int iDirt, out int jDirt) &&
+                Utils.RandomValue(0, Constants.LavaMeltsDirtChance) == 0)
+            {
+                LifeTime += 30;
+                Matrix.Erase(iDirt, jDirt);
+                Matrix.Add(MaterialType.Obsidian, iDirt, jDirt);
             }
 
             for (int k = 0; k < Utils.RandomValue(1, 10); k++)
@@ -1714,39 +1806,6 @@ namespace SandBoxSFML.Materials
 
         private void UpdateAsh(int i, int j)
         {
-            var vX = (int)(i + Velocity.X);
-            var vY = (int)(j + Velocity.Y);
-
-            Point? validPoint = null;
-
-            CalculateTrajectory(i, j, vX, vY);
-            for (int number = 0; number < _trajectory.Count; number++)
-            {
-                var point = _trajectory[number];
-
-                if (point.X == i &&
-                    point.Y == j)
-                {
-                    continue;
-                }
-
-                if (Matrix.IsFree(point.X, point.Y))
-                {
-                    validPoint = point;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (validPoint.HasValue)
-            {
-                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
-
-                return;
-            }
-
             var random = Utils.Next(0, 100);
             var direction = random < 50 ? Direction.Right : Direction.Left;
             var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
@@ -1855,7 +1914,7 @@ namespace SandBoxSFML.Materials
         {
             Color = MaterialColor.GetColor(Type, LifeTime);
 
-            if (LifeTime > Constants.FireLifeTime)
+            if (LifeTime > Constants.BurningGasLifeTime)
             {
                 Matrix.Erase(i, j);
 
@@ -2092,6 +2151,246 @@ namespace SandBoxSFML.Materials
 
                 return;
             }
+        }
+
+        private void UpdateDirt(int i, int j)
+        {
+            var vX = (int)(i + Velocity.X);
+            var vY = (int)(j + Velocity.Y);
+
+            Point? validPoint = null;
+
+            CalculateTrajectory(i, j, vX, vY);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y) ||
+                    Matrix.IsLiquid(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
+            var random = Utils.Next(0, 100);
+            var direction = random < 50 ? Direction.Right : Direction.Left;
+            var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
+
+            if (Matrix.IsFree(cellBelow.X, cellBelow.Y) ||
+                Matrix.IsLiquid(cellBelow.X, cellBelow.Y))
+            {
+                Matrix.Swap(cellBelow.X, cellBelow.Y, i, j);
+
+                return;
+            }
+
+            if (Matrix.IsLiquidNearby(i, j, out int iLiquid, out int jLiquid) &&
+                Utils.RandomValue(0, 10) == 0)
+            {
+                Matrix.Swap(iLiquid, jLiquid, i, j);
+
+                return;
+            }
+
+            Velocity.Y /= 2.0f;
+        }
+
+        private void UpdateSeed(int i, int j)
+        {
+            if (Matrix.IsElementNearby(i, j, MaterialType.Dirt, out int iNew, out int jNew) &&
+                Utils.RandomValue(0, Constants.PlantGrowthChance) == 0)
+            {
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Plant, i, j);
+
+                return;
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iNew2, out int jNew2) &&
+                Utils.RandomValue(0, Constants.PlantGrowthChance) == 0)
+            {
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Plant, i, j);
+
+                return;
+            }
+
+            var vX = (int)(i + Velocity.X);
+            var vY = (int)(j + Velocity.Y);
+
+            Point? validPoint = null;
+
+            CalculateTrajectory(i, j, vX, vY);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y) ||
+                    Matrix.IsLiquid(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
+            var random = Utils.Next(0, 100);
+            var direction = random < 50 ? Direction.Right : Direction.Left;
+            var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
+
+            if (Matrix.IsFree(cellBelow.X, cellBelow.Y) ||
+                Matrix.IsLiquid(cellBelow.X, cellBelow.Y))
+            {
+                Matrix.Swap(cellBelow.X, cellBelow.Y, i, j);
+
+                return;
+            }
+
+            if (Matrix.IsLiquidNearby(i, j, out int iLiquid, out int jLiquid) &&
+                Utils.RandomValue(0, 10) == 0)
+            {
+                Matrix.Swap(iLiquid, jLiquid, i, j);
+
+                return;
+            }
+
+            Velocity.Y /= 2.0f;
+        }
+
+        private void UpdatePlant(int i, int j)
+        {
+            if (Matrix.IsElementNearby(i, j, MaterialType.Empty, out int iSpace, out int jSpace) &&
+                Utils.RandomValue(0, Constants.PlantSpontaneousGrowthChance) == 0)
+            {
+                Matrix.Add(MaterialType.Plant, iSpace, jSpace);
+
+                return;
+            }
+
+            var neighboursCount = Matrix.CountNeighborElements(i, j, MaterialType.Plant);
+
+            if (neighboursCount < 2)
+            {
+                Matrix.Erase(i, j);
+
+                return;   
+            }
+
+            if (neighboursCount > 3)
+            {
+                Matrix.Erase(i, j);
+
+                return;
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Empty, out int iSpace2, out int jSpace2) &&
+                Utils.RandomValue(0, 1) == 0)
+            {
+                Matrix.Add(MaterialType.Plant, iSpace2, jSpace2);
+            }
+        }
+
+        private void UpdateVirus(int i, int j)
+        {
+            Color = MaterialColor.GetColor(Type, LifeTime);
+
+            if (LifeTime > Constants.VirusLifeTime)
+            {
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.BurningGas, i, j);
+
+                return;
+            }
+
+            if (Matrix.AnyElementNearby(i, j, out int iNew, out int jNew) &&
+                Matrix[iNew, jNew].Type != MaterialType.Virus &&
+                Matrix[iNew, jNew].Type != MaterialType.BurningGas &&
+                Utils.RandomValue(0, Constants.VirusDevourChance) == 0)
+            {
+                LifeTime += 1;
+                Matrix.Erase(iNew, jNew);
+                Matrix.Add(MaterialType.Virus, iNew, jNew);
+
+                return;
+            }
+
+            var vX = (int)(i + Velocity.X);
+            var vY = (int)(j + Velocity.Y);
+
+            Point? validPoint = null;
+
+            CalculateTrajectory(i, j, vX, vY);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
+            var random = Utils.Next(0, 100);
+            var direction = random < 50 ? Direction.Right : Direction.Left;
+            var cellBelow = new Point(direction == Direction.Right ? (i + 1) : direction == Direction.Left ? (i - 1) : i, j + 1);
+
+            if (Matrix.IsFree(cellBelow.X, cellBelow.Y))
+            {
+                Matrix.Swap(cellBelow.X, cellBelow.Y, i, j);
+
+                return;
+            }
+
+            Velocity.Y /= 2.0f;
         }
     }
 }

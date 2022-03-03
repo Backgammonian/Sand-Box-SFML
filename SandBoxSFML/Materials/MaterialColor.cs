@@ -116,7 +116,6 @@ namespace SandBoxSFML.Materials
             var titanColors = new ColorSamples();
             titanColors.Add(new Color(210, 203, 214));
             titanColors.Add(new Color(200, 193, 204));
-            titanColors.Add(new Color(190, 184, 193));
             _colors.Add(MaterialType.Titan, titanColors);
 
             var plantColors = new ColorSamples();
@@ -167,6 +166,34 @@ namespace SandBoxSFML.Materials
             obsidianColors.Add(new Color(58, 50, 71));
             obsidianColors.Add(new Color(3, 1, 33));
             _colors.Add(MaterialType.Obsidian, obsidianColors);
+
+            var dirtColors = new ColorSamples();
+            dirtColors.Add(new Color(123, 85, 56));
+            dirtColors.Add(new Color(152, 108, 72));
+            dirtColors.Add(new Color(123, 85, 56));
+            _colors.Add(MaterialType.Dirt, dirtColors);
+
+            var seedColors = new ColorSamples();
+            seedColors.Add(new Color(222, 115, 203));
+            seedColors.Add(new Color(194, 112, 204));
+            seedColors.Add(new Color(179, 112, 204));
+            seedColors.Add(new Color(157, 111, 205));
+            seedColors.Add(new Color(111, 109, 206));
+            seedColors.Add(new Color(98, 96, 181));
+            _colors.Add(MaterialType.Seed, seedColors);
+
+            var virusColors = new ColorSamples();
+            virusColors.Add(new Color(255, 0, 35));
+            virusColors.Add(new Color(210, 0, 35));
+            virusColors.Add(new Color(180, 0, 35));
+            virusColors.Add(new Color(150, 0, 35));
+            virusColors.Add(new Color(120, 0, 35));
+            virusColors.Add(new Color(90, 0, 35));
+            virusColors.Add(new Color(60, 0, 35));
+            virusColors.Add(new Color(30, 0, 35));
+            virusColors.Add(new Color(10, 0, 35));
+            virusColors.Add(new Color(0, 0, 35));
+            _colors.Add(MaterialType.Virus, virusColors);
         }
 
         public static Color GetColor(MaterialType type, int lifeTime)
@@ -192,6 +219,12 @@ namespace SandBoxSFML.Materials
             if (type == MaterialType.BurningGas)
             {
                 var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.BurningGasLifeTime, 0, _colors[type].Count - 1);
+                return _colors[type][value];
+            }
+            else
+            if (type == MaterialType.Virus)
+            {
+                var value = Utils.Clamp(lifeTime * _colors[type].Count / Constants.VirusLifeTime, 0, _colors[type].Count - 1);
                 return _colors[type][value];
             }
 

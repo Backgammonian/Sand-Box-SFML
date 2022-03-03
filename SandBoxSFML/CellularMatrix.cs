@@ -1,5 +1,4 @@
 ﻿using System;
-using SFML.System;
 using SandBoxSFML.Materials;
 
 namespace SandBoxSFML
@@ -81,11 +80,6 @@ namespace SandBoxSFML
             return IsWithihBounds(i, j) && _matrix[i, j].Type != MaterialType.Empty;
         }
 
-        public bool IsEmber(int i, int j)
-        {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Ember;
-        }
-
         public bool IsWater(int i, int j)
         {
             return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Water;
@@ -128,12 +122,21 @@ namespace SandBoxSFML
 
         public bool IsLiquid(int i, int j)
         {
-            return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Water || _matrix[i, j].Type == MaterialType.Oil || _matrix[i, j].Type == MaterialType.Acid);
+            return IsWithihBounds(i, j) && 
+                (_matrix[i, j].Type == MaterialType.Water ||
+                _matrix[i, j].Type == MaterialType.Oil || 
+                _matrix[i, j].Type == MaterialType.Acid);
         }
 
         public bool IsMovableSolid(int i, int j)
         {
-            return IsWithihBounds(i, j) && (_matrix[i, j].Type == MaterialType.Sand || _matrix[i, j].Type == MaterialType.Coal || _matrix[i, j].Type == MaterialType.Ash || _matrix[i, j].Type == MaterialType.Ember || _matrix[i, j].Type == MaterialType.Fire);
+            return IsWithihBounds(i, j) && 
+                (_matrix[i, j].Type == MaterialType.Sand ||
+                _matrix[i, j].Type == MaterialType.Coal ||
+                _matrix[i, j].Type == MaterialType.Ash ||
+                _matrix[i, j].Type == MaterialType.Ember ||
+                _matrix[i, j].Type == MaterialType.Fire ||
+                _matrix[i, j].Type == MaterialType.Virus);
         }
 
         public bool IsLiquidNearby(int i, int j, out int iNew, out int jNew)
@@ -213,7 +216,7 @@ namespace SandBoxSFML
 
         public bool IsElementNearby(int i, int j, MaterialType type, out int iNew, out int jNew)
         {
-            var h = Utils.NextBoolean() ? -1 : 1;
+            var h = Utils.NextBoolean() ? 1 : -1;
             var v = Utils.NextBoolean() ? -1 : 1;
 
             if (IsWithihBounds(i + h, j + v) && _matrix[i + h, j + v].Type == type)
@@ -273,6 +276,81 @@ namespace SandBoxSFML
             }
 
             if (IsWithihBounds(i, j - v) && _matrix[i, j - v].Type == type)
+            {
+                iNew = i;
+                jNew = j - v;
+
+                return true;
+            }
+
+            iNew = i;
+            jNew = j;
+
+            return false;
+        }
+
+        public bool AnyElementNearby(int i, int j, out int iNew, out int jNew)
+        {
+            var h = Utils.NextBoolean() ? 1 : -1;
+            var v = Utils.NextBoolean() ? -1 : 1;
+
+            if (IsOccupied(i + h, j + v))
+            {
+                iNew = i + h;
+                jNew = j + v;
+
+                return true;
+            }
+
+            if (IsOccupied(i - h, j - v))
+            {
+                iNew = i - h;
+                jNew = j - v;
+
+                return true;
+            }
+
+            if (IsOccupied(i + h, j - v))
+            {
+                iNew = i + h;
+                jNew = j - v;
+
+                return true;
+            }
+
+            if (IsOccupied(i - h, j + v))
+            {
+                iNew = i - h;
+                jNew = j + v;
+
+                return true;
+            }
+
+            if (IsOccupied(i + h, j))
+            {
+                iNew = i + h;
+                jNew = j;
+
+                return true;
+            }
+
+            if (IsOccupied(i, j + v))
+            {
+                iNew = i;
+                jNew = j + v;
+
+                return true;
+            }
+
+            if (IsOccupied(i - h, j))
+            {
+                iNew = i - h;
+                jNew = j;
+
+                return true;
+            }
+
+            if (IsOccupied(i, j - v))
             {
                 iNew = i;
                 jNew = j - v;

@@ -15,7 +15,8 @@ namespace SandBoxSFML
         private float _selectionRadius;
         private DateTime _lastTime;
         private long _framesRendered;
-        private int _mouseX, _mouseY;
+        private int _prevMouseX, _prevMouseY;
+        private int _curMouseX, _curMouseY;
         private Mouse.Button _mouseButton;
 
         public World(int width, int height)
@@ -98,8 +99,10 @@ namespace SandBoxSFML
             IsUsed = true;
 
             _mouseButton = button;
-            _mouseX = x;
-            _mouseY = y;
+            _prevMouseX = _curMouseX;
+            _prevMouseY = _curMouseY;
+            _curMouseX = x;
+            _curMouseY = y;
         }
 
         public void StopInput()
@@ -117,19 +120,21 @@ namespace SandBoxSFML
             if (_mouseButton == Mouse.Button.Left && 
                 SelectedMaterial != MaterialType.Empty)
             {
-                AddMaterialToWorld(_mouseX, _mouseY);
+                BrushAddMaterial();
             }
             
             if (_mouseButton == Mouse.Button.Right)
             {
-                EraseMaterial(_mouseX, _mouseY);
+                BrushEraseMaterial();
             }
         }
 
         public void UpdateMousePosition(int x, int y)
         {
-            _mouseX = x;
-            _mouseY = y;
+            _prevMouseX = _curMouseX;
+            _prevMouseY = _curMouseY;
+            _curMouseX = x;
+            _curMouseY = y;
         }
 
         private void CountFPS()
@@ -140,6 +145,23 @@ namespace SandBoxSFML
                 FPS = _framesRendered;
                 _framesRendered = 0;
                 _lastTime = DateTime.Now;
+            }
+        }
+
+        private void BrushAddMaterial()
+        {
+            var deltaX = _curMouseX - _prevMouseX;
+            var deltaY = _curMouseY - _prevMouseY;
+            var distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            var numDraws = Convert.ToSingle(distance);
+            distance = Convert.ToSingle(Math.Floor(distance));
+
+            for (var i = 0; i < (int)distance; i++)
+            {
+                var ipos = Vector2.Lerp(new Vector2(_prevMouseX, _prevMouseY), new Vector2(_curMouseX, _curMouseY), i / numDraws);
+
+                AddMaterialToWorld((int)ipos.X, (int)ipos.Y);
             }
         }
 
@@ -179,6 +201,23 @@ namespace SandBoxSFML
                 var velocity = new Vector2(deviation, Utils.RandomValue(-2, 5));
 
                 _matrix.Add(SelectedMaterial, x + (int)rx, y + (int)ry, velocity);
+            }
+        }
+
+        private void BrushEraseMaterial()
+        {
+            var deltaX = _curMouseX - _prevMouseX;
+            var deltaY = _curMouseY - _prevMouseY;
+            var distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            var numDraws = Convert.ToSingle(distance);
+            distance = Convert.ToSingle(Math.Floor(distance));
+
+            for (var i = 0; i < (int)distance; i++)
+            {
+                var ipos = Vector2.Lerp(new Vector2(_prevMouseX, _prevMouseY), new Vector2(_curMouseX, _curMouseY), i / numDraws);
+
+                EraseMaterial((int)ipos.X, (int)ipos.Y);
             }
         }
 
