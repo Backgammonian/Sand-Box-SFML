@@ -6,17 +6,20 @@ Simple 2D physics simulation based on cellular automata
 * Sidebar menu for choosing current material
 ## Available materials
 * Sand
+* Dirt
 * Water and Steam
 * Stone
 * Oil
 * Fire and Embers
 * Smoke (produced by fire)
 * Coal
-* Wood and Plants
+* Wood
+* Seed and Plants
 * Acid
 * Lava
 * Titan (immune to acid)
 * Obsidian (byproduct of lava)
 * Ash (byproduct of fire)
 * Methane (try to set it on fire!)
-* and ICE
+* Ice
+* Virus
