@@ -924,6 +924,31 @@ namespace SandBoxSFML.Materials
                 }
             }
 
+            if (Matrix.IsElementNearby(i, j, MaterialType.Seed, out int iSeed, out int jSeed) &&
+                Utils.RandomValue(0, Constants.PlantIgnitionChance) == 0)
+            {
+                Matrix.Erase(iSeed, jSeed);
+                Matrix.Add(MaterialType.Fire, iSeed, jSeed);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
             if (Matrix.IsElementNearby(i, j, MaterialType.Methane, out int iMethane, out int jMethane) &&
                 Utils.RandomValue(0, Constants.MethaneIgnitionChance) == 0)
             {
@@ -1221,6 +1246,13 @@ namespace SandBoxSFML.Materials
             {
                 Matrix.Erase(iPlant, jPlant);
                 Matrix.Add(MaterialType.Fire, iPlant, jPlant);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Seed, out int iSeed, out int jSeed) &&
+                Utils.RandomValue(0, Constants.PlantIgnitionChance) == 0)
+            {
+                Matrix.Erase(iSeed, jSeed);
+                Matrix.Add(MaterialType.Fire, iSeed, jSeed);
             }
 
             if (Matrix.IsElementNearby(i, j, MaterialType.Methane, out int iMethane, out int jMethane) &&
@@ -1729,6 +1761,31 @@ namespace SandBoxSFML.Materials
                 }
             }
 
+            if (Matrix.IsElementNearby(i, j, MaterialType.Seed, out int iSeed, out int jSeed) &&
+                Utils.RandomValue(0, Constants.PlantIgnitionChance) == 0)
+            {
+                Matrix.Erase(iSeed, jSeed);
+                Matrix.Add(MaterialType.Fire, iSeed, jSeed);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
             var vX = (int)(i + Velocity.X);
             var vY = (int)(j + Velocity.Y);
 
@@ -2006,6 +2063,31 @@ namespace SandBoxSFML.Materials
             {
                 Matrix.Erase(iPlant, jPlant);
                 Matrix.Add(MaterialType.Fire, iPlant, jPlant);
+
+                if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
+                {
+                    var r = Utils.NextBoolean();
+                    for (var n = -3; n < 2; n++)
+                    {
+                        for (var m = r ? -3 : 2; r ? m < 2 : m > -3; m += r ? 1 : -1)
+                        {
+                            if (Matrix.IsFree(i + m, j + n))
+                            {
+                                LifeTime += 5;
+                                Matrix.Swap(i + m, j + n, i, j);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Seed, out int iSeed, out int jSeed) &&
+                Utils.RandomValue(0, Constants.PlantIgnitionChance) == 0)
+            {
+                Matrix.Erase(iSeed, jSeed);
+                Matrix.Add(MaterialType.Fire, iSeed, jSeed);
 
                 if (Utils.RandomValue(0, Constants.FireSpreadChance) == 0)
                 {
