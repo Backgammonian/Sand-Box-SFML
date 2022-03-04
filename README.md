@@ -26,6 +26,8 @@ Simple 2D physics simulation based on cellular automata
 * Methane (try to set it on fire!)
 * Ice (melts when heated)
 * Virus (devours all materials)
+## Demonstration:
+![demo](demo.gif)
 ## Libraries used in this project:
 * [SFML.Net](https://github.com/SFML/SFML.Net)
 * [Big Gustave](https://github.com/EliotJones/BigGustave)
