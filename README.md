@@ -22,4 +22,4 @@ Simple 2D physics simulation based on cellular automata
 * Ash (byproduct of fire)
 * Methane (try to set it on fire!)
 * Ice
-* Virus
+* Virus (devours all materials)
