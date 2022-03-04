@@ -6,10 +6,15 @@ using SFML.System;
 using SandBoxSFML.Materials;
 using SandBoxSFML.UI;
 
+using System.Windows.Forms;
+using System.Diagnostics;
+using System.IO;
+
 namespace SandBoxSFML
 {
     class Program
     {
+        private const string _appName = "SandBox";
         private static uint _width;
         private static uint _height;
         private static World _world;
@@ -18,8 +23,7 @@ namespace SandBoxSFML
         private static long _ticks;
         private static bool _isSimulating;
 
-        public static RenderWindow Window { get; private set; }
-
+        [STAThread]
         private static void Main()
         {
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
@@ -60,7 +64,7 @@ namespace SandBoxSFML
             gradient[2] = new Vertex(new Vector2f(_width, _height), colorBottom);
             gradient[3] = new Vertex(new Vector2f(_width, 0), colorTop);
 
-            Window = new RenderWindow(new VideoMode(_width, _height), "SandBox", Styles.Close);
+            Window = new RenderWindow(new VideoMode(_width, _height), _appName, Styles.Close);
             Window.SetVerticalSyncEnabled(true);
             Window.Closed += (_, __) => Window.Close();
             Window.MouseButtonPressed += OnMouseButtonPressed;
@@ -96,11 +100,12 @@ namespace SandBoxSFML
 
                 if (_ticks % 20 == 0)
                 {
-                    Console.WriteLine("FPS: " + _world.FPS);
-                    Console.WriteLine(Math.Round(_delta * 1000, 2) + " ms per frame");
+                    Window.SetTitle(_appName + " (FPS: " + _world.FPS + "; " + Math.Round(_delta * 1000, 2) + " ms per frame)");
                 }
             }
         }
+
+        public static RenderWindow Window { get; private set; }
 
         private static void OnUISelectionRadiusChanged(object sender, EventArgs e)
         {
@@ -121,6 +126,7 @@ namespace SandBoxSFML
         private static void OnMouseMoved(object sender, MouseMoveEventArgs e)
         {
             _world.UpdateMousePosition(e.X, e.Y);
+            _world.Input();
             _ui.UpdatePosition(e.X, e.Y);
         }
 
@@ -134,6 +140,7 @@ namespace SandBoxSFML
             else
             {
                 _world.StartInput(e.Button, e.X, e.Y);
+                _world.Input();
             }
         }
 
@@ -147,11 +154,17 @@ namespace SandBoxSFML
             _ui.UnselectControls();
         }
 
-        private static void OnKeyPressed(object sender, KeyEventArgs e)
+        private static void OnKeyPressed(object sender, SFML.Window.KeyEventArgs e)
         {
             if (e.Code == Keyboard.Key.Escape)
             {
                 Window.Close();
+            }
+            else
+            if (e.Code == Keyboard.Key.Space)
+            {
+                _isSimulating = !_isSimulating;
+                _ui.ToggleControlText(_isSimulating);
             }
         }
 
@@ -167,17 +180,43 @@ namespace SandBoxSFML
 
         private static void OnUIClearSelected(object sender, EventArgs e)
         {
-            
+            _world.Clear();
         }
 
         private static void OnUISaveSelected(object sender, EventArgs e)
         {
-            
+            var fileName = "file.j";
+            var extension = Path.GetExtension(fileName);
+
+            Debug.WriteLine(extension);
+
+            var saveFileDialog = new SaveFileDialog();
+
+            Debug.WriteLine(Path.GetFileNameWithoutExtension(fileName));
+            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(fileName);
+            saveFileDialog.DefaultExt = ".abc";
+            saveFileDialog.Filter = extension.Length > 0 ?
+                    string.Format("{1} files (*{0})|*{0}|All files (*.*)|*.*", extension, extension.Remove(0, 1).ToUpper()) :
+                    "All files (*.*)|*.*";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Debug.WriteLine(saveFileDialog.FileName);
+            }
+
+            _ui.UnselectControls();
         }
 
         private static void OnUILoadSelected(object sender, EventArgs e)
         {
-            
+            OpenFileDialog dialog = new OpenFileDialog();
+            if (DialogResult.OK == dialog.ShowDialog())
+            {
+                string path = dialog.FileName;
+                Debug.WriteLine(path);
+            }
+
+            _ui.UnselectControls();
         }
     }
 }

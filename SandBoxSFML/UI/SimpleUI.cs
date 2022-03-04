@@ -100,7 +100,7 @@ namespace SandBoxSFML.UI
             AddControl("Save");
             _controlsButtons[3].Selected += OnSaveSelected;
             AddControl("Load");
-            _controlsButtons[1].Selected += OnLoadSelected;
+            _controlsButtons[4].Selected += OnLoadSelected;
 
             _controlText = new Text();
             _controlText.DisplayedString = "";
@@ -357,6 +357,11 @@ namespace SandBoxSFML.UI
             {
                 _materialPreview.DisplayedString = "";
             }
+        }
+
+        public void ToggleControlText(bool isSimulating)
+        {
+            _controlText.DisplayedString = isSimulating ? "" : "Paused";
         }
 
         private void OnResumeSelected(object sender, MaterialSelectedEventArgs e)

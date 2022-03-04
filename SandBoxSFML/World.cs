@@ -34,7 +34,7 @@ namespace SandBoxSFML
             _shader = new Shader(null, null, new MemoryStream(fragmentShaderFile));
             _shader.SetUniform("texture", Shader.CurrentTexture);
 
-            Clear();
+            Init();
 
             IsUsed = false;
         }
@@ -64,10 +64,17 @@ namespace SandBoxSFML
             _canvas.DrawPoint(e.X, e.Y, e.Color);
         }
 
-        private void Clear()
+        private void Init()
         {
             _canvas.Clear(MaterialColor.GetColor(MaterialType.Empty, 0));
             _matrix.Initialize();
+        }
+
+        public void Clear()
+        {
+            _canvas.Clear(MaterialColor.GetColor(MaterialType.Empty, 0));
+            _canvas.Update();
+            _matrix.Clear();
         }
 
         public void Draw(RenderTarget target, RenderStates states)
@@ -84,8 +91,6 @@ namespace SandBoxSFML
 
         public void Update()
         {
-            Input();
-
             _matrix.StepAll();
             _matrix.ToggleFrameUpdate();
 
@@ -110,7 +115,7 @@ namespace SandBoxSFML
             IsUsed = false;
         }
 
-        private void Input()
+        public void Input()
         {
             if (!IsUsed)
             {
@@ -127,6 +132,8 @@ namespace SandBoxSFML
             {
                 BrushEraseMaterial();
             }
+
+            _canvas.Update();
         }
 
         public void UpdateMousePosition(int x, int y)
