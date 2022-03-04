@@ -4,7 +4,8 @@ Simple 2D physics simulation based on cellular automata
 * Left click - place material
 * Right click - erase
 * Sidebar menu for choosing current material
-* Controls menu for pause, resume, etc
+* Controls menu for pause/resume and world cleansing
+* Save and load worlds in/from .png images
 * ESC - exit
 * Space - pause/resume
 ## Available materials
@@ -25,3 +26,6 @@ Simple 2D physics simulation based on cellular automata
 * Methane (try to set it on fire!)
 * Ice (melts when heated)
 * Virus (devours all materials)
+## Libraries used in this project:
+* [SFML.Net](https://github.com/SFML/SFML.Net)
+* [Big Gustave](https://github.com/EliotJones/BigGustave)
