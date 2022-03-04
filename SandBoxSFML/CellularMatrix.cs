@@ -530,9 +530,33 @@ namespace SandBoxSFML
             }
         }
 
+        public void Set(MaterialType type, int i, int j)
+        {
+            if (IsWithihBounds(i, j))
+            {
+                _matrix[i, j].ChangeType(type);
+
+                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, _matrix[i, j].Color));
+            }
+        }
+
         public void ToggleFrameUpdate()
         {
             _isUpdatedThisFrame.Fill(_fillValue);
+        }
+
+        public MaterialType[,] GetMatrix()
+        {
+            var result = new MaterialType[Width, Height];
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    result[i, j] = _matrix[i, j].Type;
+                }
+            }
+
+            return result;
         }
     }
 }

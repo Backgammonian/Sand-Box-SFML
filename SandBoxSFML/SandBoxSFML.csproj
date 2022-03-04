@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BigGustave" Version="1.0.6" />
     <PackageReference Include="SFML.Net" Version="2.5.0" />
   </ItemGroup>
 

@@ -77,6 +77,24 @@ namespace SandBoxSFML
             _matrix.Clear();
         }
 
+        public void Load(MaterialType[,] newMatrix)
+        {
+            for (int i = 0; i < newMatrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < newMatrix.GetLength(1); j++)
+                {
+                    _matrix.Set(newMatrix[i, j], i, j);
+                }
+            }
+
+            _canvas.Update();
+        }
+
+        public MaterialType[,] GetMatrix()
+        {
+            return _matrix.GetMatrix();
+        }
+
         public void Draw(RenderTarget target, RenderStates states)
         {
             if (Shader.IsAvailable)

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Threading;
+using System.Windows.Forms;
+using System.IO;
 using SFML.Window;
 using SFML.Graphics;
 using SFML.System;
+using BigGustave;
 using SandBoxSFML.Materials;
 using SandBoxSFML.UI;
-
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.IO;
 
 namespace SandBoxSFML
 {
@@ -100,7 +99,11 @@ namespace SandBoxSFML
 
                 if (_ticks % 20 == 0)
                 {
-                    Window.SetTitle(_appName + " (FPS: " + _world.FPS + "; " + Math.Round(_delta * 1000, 2) + " ms per frame)");
+                    var title = string.Format("{0} (FPS: {1} | {2} ms per frame)", 
+                        _appName, 
+                        _world.FPS, 
+                        (Math.Round(_delta * 1000, 2) + "").Replace(',', '.'));
+                    Window.SetTitle(title);
                 }
             }
         }
@@ -185,38 +188,125 @@ namespace SandBoxSFML
 
         private static void OnUISaveSelected(object sender, EventArgs e)
         {
-            var fileName = "file.j";
-            var extension = Path.GetExtension(fileName);
+            _ui.UnselectControls();
 
-            Debug.WriteLine(extension);
-
-            var saveFileDialog = new SaveFileDialog();
-
-            Debug.WriteLine(Path.GetFileNameWithoutExtension(fileName));
-            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(fileName);
-            saveFileDialog.DefaultExt = ".abc";
-            saveFileDialog.Filter = extension.Length > 0 ?
-                    string.Format("{1} files (*{0})|*{0}|All files (*.*)|*.*", extension, extension.Remove(0, 1).ToUpper()) :
-                    "All files (*.*)|*.*";
-
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            var saveFile = new SaveFileDialog()
             {
-                Debug.WriteLine(saveFileDialog.FileName);
+                FileName = "world",
+                DefaultExt = ".png",
+                ValidateNames = true,
+                Filter = string.Format("{1} files (*{0})|*{0}|All files (*.*)|*.*", ".png", "PNG")
+            };
+
+            if (saveFile.ShowDialog() != DialogResult.OK)
+            {
+                return;
             }
 
-            _ui.UnselectControls();
+            try
+            {
+                var builder = PngBuilder.Create((int)_width, (int)_height, true);
+                var matrix = _world.GetMatrix();
+                for (int i = 0; i < matrix.GetLength(0); i++)
+                {
+                    for (int j = 0; j < matrix.GetLength(1); j++)
+                    {
+                        var color = MaterialColor.GetFirstColor(matrix[i, j]);
+                        builder.SetPixel(new Pixel(color.R, color.G, color.B, color.A, false), i, j);
+                    }
+                }
+
+                using var saveFileStream = File.OpenWrite(saveFile.FileName);
+                builder.Save(saveFileStream);
+
+                saveFileStream.Close();
+                saveFileStream.Dispose();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(
+                    "Unable to save field to image",
+                    "Save error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         private static void OnUILoadSelected(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            if (DialogResult.OK == dialog.ShowDialog())
+            _ui.UnselectControls();
+
+            OpenFileDialog openFile = new OpenFileDialog();
+            if (openFile.ShowDialog() != DialogResult.OK)
             {
-                string path = dialog.FileName;
-                Debug.WriteLine(path);
+                return;
             }
 
-            _ui.UnselectControls();
+            var path = openFile.FileName;
+            var fileExtension = Path.GetExtension(path);
+
+            if (fileExtension != ".png")
+            {
+                MessageBox.Show(
+                    "Input image should have .PNG format!", 
+                    "Load error", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
+
+                return;
+            }
+
+            try
+            {
+                using var openStream = File.OpenRead(path);
+                var image = Png.Open(openStream);
+
+                if (image.Header.Width != _width ||
+                    image.Header.Height != _height)
+                {
+                    MessageBox.Show(
+                        "Input image should have same size: width - " + _width + " px, height - " + _height + " px!",
+                        "Load error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+
+                    return;
+                }
+
+                if (!image.HasAlphaChannel)
+                {
+                    MessageBox.Show(
+                        "Input image should have alpha channel!",
+                        "Load error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+
+                    return;
+                }
+
+                var newWorld = new MaterialType[_width, _height];
+                for (int i = 0; i < _width; i++)
+                {
+                    for (int j = 0; j < _height; j++)
+                    {
+                        var pixel = image.GetPixel(i, j);
+                        newWorld[i, j] = MaterialColor.MatchColor(pixel.R, pixel.G, pixel.B, pixel.A);
+                    }
+                }
+
+                _world.Load(newWorld);
+
+                openStream.Close();
+                openStream.Dispose();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(
+                    "Unable to load image",
+                    "Load error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

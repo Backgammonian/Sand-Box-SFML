@@ -230,5 +230,28 @@ namespace SandBoxSFML.Materials
 
             return _colors[type][_r.Next(0, _colors[type].Count)];
         }
+
+        public static MaterialType MatchColor(byte r, byte g, byte b, byte a)
+        {
+            foreach (var palette in _colors)
+            {
+                var firstColor = palette.Value[0];
+
+                if (firstColor.R == r &&
+                    firstColor.G == g &&
+                    firstColor.B == b &&
+                    firstColor.A == a)
+                {
+                    return palette.Key;
+                }
+            }
+
+            return MaterialType.Empty;
+        }
+
+        public static Color GetFirstColor(MaterialType type)
+        {
+            return _colors[type][0];
+        }
     }
 }
