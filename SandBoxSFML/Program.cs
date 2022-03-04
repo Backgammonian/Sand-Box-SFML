@@ -16,6 +16,7 @@ namespace SandBoxSFML
         private static SimpleUI _ui;
         private static float _delta;
         private static long _ticks;
+        private static bool _isSimulating;
 
         public static RenderWindow Window { get; private set; }
 
@@ -27,11 +28,26 @@ namespace SandBoxSFML
             _height = 700;
             
             _world = new World((int)_width, (int)_height);
+            _isSimulating = true;
 
             var font = new Font(Properties.Resources.Minecraft);
-            _ui = new SimpleUI(new Vector2f(5, 25), new Vector2f(80, 670), new Color(255, 255, 255, 50), font, new Vector2f(5, 5));
+            _ui = new SimpleUI(
+                new Vector2f(5, 25), 
+                new Vector2f(80, 670), 
+                new Color(255, 255, 255, 50), 
+                font, 
+                new Vector2f(5, 5), 
+                new Vector2f(715, 25), 
+                new Vector2f(80, 180),
+                new Vector2f(715, 5));
+
             _ui.MaterialChanged += OnUIMaterialChanged;
             _ui.SelectionRadiusChanged += OnUISelectionRadiusChanged;
+            _ui.ResumeSelected += OnUIResumeSelected;
+            _ui.PauseSelected += OnUIPauseSelected;
+            _ui.ClearSelected += OnUIClearSelected;
+            _ui.SaveSelected += OnUISaveSelected;
+            _ui.LoadSelected += OnUILoadSelected;
 
             _ui.SetMaterial(MaterialType.Sand);
             _ui.SetRadius(10);
@@ -66,7 +82,10 @@ namespace SandBoxSFML
 
                 Window.DispatchEvents();
 
-                _world.Update();
+                if (_isSimulating)
+                {
+                    _world.Update();
+                }
 
                 Window.Clear(Color.Black);
                 Window.Draw(gradient, PrimitiveType.Quads);
@@ -110,6 +129,7 @@ namespace SandBoxSFML
             if (_ui.IsMouseInside(e.X, e.Y))
             {
                 _ui.Input(e.X, e.Y);
+                _ui.ControlInput(e.X, e.Y);
             }
             else
             {
@@ -123,6 +143,8 @@ namespace SandBoxSFML
             {
                 _world.StopInput();
             }
+
+            _ui.UnselectControls();
         }
 
         private static void OnKeyPressed(object sender, KeyEventArgs e)
@@ -131,6 +153,31 @@ namespace SandBoxSFML
             {
                 Window.Close();
             }
+        }
+
+        private static void OnUIResumeSelected(object sender, EventArgs e)
+        {
+            _isSimulating = true;
+        }
+
+        private static void OnUIPauseSelected(object sender, EventArgs e)
+        {
+            _isSimulating = false;
+        }
+
+        private static void OnUIClearSelected(object sender, EventArgs e)
+        {
+            
+        }
+
+        private static void OnUISaveSelected(object sender, EventArgs e)
+        {
+            
+        }
+
+        private static void OnUILoadSelected(object sender, EventArgs e)
+        {
+            
         }
     }
 }
