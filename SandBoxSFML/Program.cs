@@ -85,6 +85,11 @@ namespace SandBoxSFML
 
                 Window.DispatchEvents();
 
+                if (_world.IsUsed)
+                {
+                    _world.Input();
+                }
+
                 if (_isSimulating)
                 {
                     _world.Update();

@@ -122,8 +122,8 @@ namespace SandBoxSFML
             IsUsed = true;
 
             _mouseButton = button;
-            _prevMouseX = _curMouseX;
-            _prevMouseY = _curMouseY;
+            _prevMouseX = _curMouseX - 1;
+            _prevMouseY = _curMouseY - 1;
             _curMouseX = x;
             _curMouseY = y;
         }
