@@ -3,6 +3,7 @@ Simple 2D physics simulation based on cellular automata
 ## Controls
 * Left click - place material
 * Right click - erase
+* Mouse scroll - change selecion radius
 * Sidebar menu for choosing current material
 * Controls menu for pause/resume and world cleansing
 * Save and load worlds in/from .png images
