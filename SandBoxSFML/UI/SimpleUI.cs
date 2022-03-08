@@ -79,6 +79,8 @@ namespace SandBoxSFML.UI
             _materialPreview.Font = font;
             _materialPreview.CharacterSize = 16;
             _materialPreview.FillColor = Color.White;
+            _materialPreview.OutlineColor = Color.Black;
+            _materialPreview.OutlineThickness = 1;
             _materialPreview.Position = previewPosition;
 
             SelectionRadius = 10;
@@ -107,6 +109,8 @@ namespace SandBoxSFML.UI
             _controlText.Font = font;
             _controlText.CharacterSize = 16;
             _controlText.FillColor = Color.White;
+            _controlText.OutlineColor = Color.Black;
+            _controlText.OutlineThickness = 1;
             _controlText.Position = controlTextPosition;
         }
 

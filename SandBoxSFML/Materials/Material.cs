@@ -531,7 +531,7 @@ namespace SandBoxSFML.Materials
 
         private void UpdateWater(int i, int j)
         {
-            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iNew2, out int jNew2) &&
+            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int _, out int __) &&
                 Utils.RandomValue(0, Constants.PlantGrowthChance) == 0)
             {
                 Matrix.Erase(i, j);
@@ -574,7 +574,37 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            var spreadRate = Utils.NextBoolean() ? SpreadRate : -SpreadRate;
+            //var spreadRate = Utils.NextBoolean() ? SpreadRate : -SpreadRate;
+            var spreadRate = Matrix.IsFree(i + 1, j) || Matrix.IsOil(i + 1, j) || Matrix.IsAcid(i + 1, j) ? SpreadRate : -SpreadRate;
+
+            CalculateTrajectory(i, j, i + spreadRate, j + 1);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y) ||
+                    Matrix.IsOil(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
 
             CalculateTrajectory(i, j, i + spreadRate, j);
             for (int number = 0; number < _trajectory.Count; number++)
@@ -605,7 +635,7 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            if (Matrix.IsLiquidNearby(i, j, out int iLiquid, out int jLiquid) &&
+            if (Matrix.IsElementNearby(i, j, MaterialType.Water, out int iLiquid, out int jLiquid) &&
                 Utils.RandomValue(0, 10) == 0)
             {
                 Matrix.Swap(iLiquid, jLiquid, i, j);
@@ -651,7 +681,36 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            var spreadRate = Utils.NextBoolean() ? -SpreadRate : SpreadRate;
+            //var spreadRate = Utils.NextBoolean() ? -SpreadRate : SpreadRate;
+            var spreadRate = Matrix.IsFree(i + 1, j) || Matrix.IsAcid(i + 1, j) || Matrix.IsWater(i + 1, j) ? SpreadRate : -SpreadRate;
+
+            CalculateTrajectory(i, j, i + spreadRate, j + 1);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
 
             CalculateTrajectory(i, j, i + spreadRate, j);
             for (int number = 0; number < _trajectory.Count; number++)
@@ -1368,6 +1427,166 @@ namespace SandBoxSFML.Materials
 
         private void UpdateAcid(int i, int j)
         {
+            /*if (Matrix.IsElementNearby(i, j, MaterialType.Water, out int _, out int __) &&
+                Utils.RandomValue(0, Constants.AcidDissolvesInWaterChance) == 0)
+            {
+                Matrix.Erase(i, j);
+                Matrix.Add(MaterialType.Water, i, j);
+
+                return;
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Stone, out int iStone, out int jStone) &&
+                Utils.RandomValue(0, Constants.AcidMeltsStoneChance) == 0)
+            {
+                Matrix.Erase(iStone, jStone);
+                Matrix.Swap(i, j, iStone, jStone);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Wood, out int iWood, out int jWood) &&
+                Utils.RandomValue(0, Constants.AcidMeltsWoodChance) == 0)
+            {
+                Matrix.Erase(iWood, jWood);
+                Matrix.Swap(i, j, iWood, jWood);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Dirt, out int iDirt, out int jDirt) &&
+                Utils.RandomValue(0, Constants.AcidMakesSandFromDirtChance) == 0)
+            {
+                Matrix.Erase(iDirt, jDirt);
+                Matrix.Add(MaterialType.Sand, iDirt, jDirt);
+                Matrix.Swap(i, j, iDirt, jDirt);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iPlant, out int jPlant) &&
+                Utils.RandomValue(0, Constants.AcidMeltsPlantChance) == 0)
+            {
+                Matrix.Erase(iPlant, jPlant);
+                Matrix.Swap(i, j, iPlant, jPlant);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Ash, out int iAsh, out int jAsh) &&
+                Utils.RandomValue(0, Constants.AcidMeltsAshChance) == 0)
+            {
+                Matrix.Erase(iAsh, jAsh);
+                Matrix.Swap(i, j, iAsh, jAsh);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Obsidian, out int iObsidian, out int jObsidian) &&
+                Utils.RandomValue(0, Constants.AcidMeltsObsidianChance) == 0)
+            {
+                Matrix.Erase(iObsidian, jObsidian);
+                Matrix.Swap(i, j, iObsidian, jObsidian);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Ice, out int iIce, out int jIce) &&
+                Utils.RandomValue(0, Constants.AcidMeltsIceChance) == 0)
+            {
+                Matrix.Erase(iIce, jIce);
+                Matrix.Add(MaterialType.Water, iIce, jIce);
+                Matrix.Swap(i, j, iIce, jIce);
+            }
+
+            if (Matrix.IsElementNearby(i, j, MaterialType.Oil, out int iOil, out int jOil) &&
+                Utils.RandomValue(0, Constants.AcidReactsWithOilChance) == 0)
+            {
+                Matrix.Erase(iOil, jOil);
+                Matrix.Add(MaterialType.Coal, iOil, jOil);
+                Matrix.Swap(i, j, iOil, jOil);
+            }*/
+
+            var vX = (int)(i + Velocity.X);
+            var vY = (int)(j + Velocity.Y);
+
+            Point? validPoint = null;
+
+            CalculateTrajectory(i, j, vX, vY);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
+            //var spreadRate = Utils.NextBoolean() ? -SpreadRate : SpreadRate;
+            var spreadRate = Matrix.IsFree(i + 1, j) || Matrix.IsOil(i + 1, j) || Matrix.IsWater(i + 1, j) ? SpreadRate : -SpreadRate;
+
+            CalculateTrajectory(i, j, i + spreadRate, j + 1);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
+            CalculateTrajectory(i, j, i + spreadRate, j);
+            for (int number = 0; number < _trajectory.Count; number++)
+            {
+                var point = _trajectory[number];
+
+                if (point.X == i &&
+                    point.Y == j)
+                {
+                    continue;
+                }
+
+                if (Matrix.IsFree(point.X, point.Y))
+                {
+                    validPoint = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (validPoint.HasValue)
+            {
+                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+
+                return;
+            }
+
             if (Matrix.IsElementNearby(i, j, MaterialType.Water, out int _, out int __) &&
                 Utils.RandomValue(0, Constants.AcidDissolvesInWaterChance) == 0)
             {
@@ -1428,65 +1647,18 @@ namespace SandBoxSFML.Materials
                 Matrix.Swap(i, j, iIce, jIce);
             }
 
-            var vX = (int)(i + Velocity.X);
-            var vY = (int)(j + Velocity.Y);
-
-            Point? validPoint = null;
-
-            CalculateTrajectory(i, j, vX, vY);
-            for (int number = 0; number < _trajectory.Count; number++)
+            if (Matrix.IsElementNearby(i, j, MaterialType.Oil, out int iOil, out int jOil) &&
+                Utils.RandomValue(0, Constants.AcidReactsWithOilChance) == 0)
             {
-                var point = _trajectory[number];
-
-                if (point.X == i &&
-                    point.Y == j)
-                {
-                    continue;
-                }
-
-                if (Matrix.IsFree(point.X, point.Y))
-                {
-                    validPoint = point;
-                }
-                else
-                {
-                    break;
-                }
+                Matrix.Erase(iOil, jOil);
+                Matrix.Add(MaterialType.Coal, iOil, jOil);
+                Matrix.Swap(i, j, iOil, jOil);
             }
 
-            if (validPoint.HasValue)
+            if (Matrix.IsElementNearby(i, j, MaterialType.Acid, out int iLiquid, out int jLiquid) &&
+                Utils.RandomValue(0, 10) == 0)
             {
-                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
-
-                return;
-            }
-
-            var spreadRate = Utils.NextBoolean() ? -SpreadRate : SpreadRate;
-
-            CalculateTrajectory(i, j, i + spreadRate, j);
-            for (int number = 0; number < _trajectory.Count; number++)
-            {
-                var point = _trajectory[number];
-
-                if (point.X == i &&
-                    point.Y == j)
-                {
-                    continue;
-                }
-
-                if (Matrix.IsFree(point.X, point.Y))
-                {
-                    validPoint = point;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (validPoint.HasValue)
-            {
-                Matrix.Swap(validPoint.Value.X, validPoint.Value.Y, i, j);
+                Matrix.Swap(iLiquid, jLiquid, i, j);
 
                 return;
             }

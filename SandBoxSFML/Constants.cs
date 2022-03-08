@@ -61,6 +61,7 @@
             AcidMeltsIceChance = 150;
             AcidDissolvesInWaterChance = 40;
             AcidMakesSandFromDirtChance = 20;
+            AcidReactsWithOilChance = 10;
 
             IceFreezesWaterChance = 20;
             IceMeltsFromHeatChance = 10;
@@ -128,6 +129,7 @@
         public static int AcidMeltsIceChance { get; }
         public static int AcidDissolvesInWaterChance { get; }
         public static int AcidMakesSandFromDirtChance { get; }
+        public static int AcidReactsWithOilChance { get; }
 
         public static int IceFreezesWaterChance { get; }
         public static int IceMeltsFromHeatChance { get; }
