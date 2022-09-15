@@ -42,7 +42,7 @@ namespace SandBoxSFML
                 new Vector2f(715, 25), 
                 new Vector2f(80, 180),
                 new Vector2f(715, 5));
-            //yeah, magic numbers
+            //yes, magic numbers
 
             _ui.MaterialChanged += OnUIMaterialChanged;
             _ui.SelectionRadiusChanged += OnUISelectionRadiusChanged;
@@ -65,7 +65,7 @@ namespace SandBoxSFML
 
             Window = new RenderWindow(new VideoMode(_width, _height), _appName, Styles.Close);
             Window.SetVerticalSyncEnabled(true);
-            Window.Closed += (_, __) => Window.Close();
+            Window.Closed += (_, _) => Window.Close();
             Window.MouseButtonPressed += OnMouseButtonPressed;
             Window.MouseButtonReleased += OnMouseButtonReleased;
             Window.MouseMoved += OnMouseMoved;
