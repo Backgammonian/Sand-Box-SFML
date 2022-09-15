@@ -6,7 +6,7 @@ using SandBoxSFML.Materials;
 
 namespace SandBoxSFML
 {
-    public class World : Drawable
+    public sealed class World : Drawable
     {
         private readonly ImageArray _canvas;
         private readonly Sprite _sprite;
@@ -43,7 +43,6 @@ namespace SandBoxSFML
         public int Height { get; }
         public long FPS { get; private set; }
         public bool IsUsed { get; private set; }
-
         public MaterialType SelectedMaterial { get; private set; }
 
         public float SelectionRadius

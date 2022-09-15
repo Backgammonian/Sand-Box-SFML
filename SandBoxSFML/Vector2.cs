@@ -1,6 +1,6 @@
 ﻿namespace SandBoxSFML
 {
-    public class Vector2
+    public sealed class Vector2
     {
         public Vector2(float x, float y)
         {

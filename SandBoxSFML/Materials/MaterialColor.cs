@@ -249,7 +249,7 @@ namespace SandBoxSFML.Materials
             return MaterialType.Empty;
         }
 
-        public static Color GetFirstColor(MaterialType type)
+        public static Color GetFirstTone(MaterialType type)
         {
             return _colors[type][0];
         }

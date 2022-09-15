@@ -3,7 +3,7 @@ using SFML.Graphics;
 
 namespace SandBoxSFML
 {
-    public class MatrixUpdatedEventArgs : EventArgs
+    public sealed class MatrixUpdatedEventArgs : EventArgs
     {
         public int X { get; set; }
         public int Y { get; set; }

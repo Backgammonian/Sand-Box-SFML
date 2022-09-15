@@ -2,7 +2,7 @@
 
 namespace SandBoxSFML
 {
-    public class ImageArray
+    public sealed class ImageArray
     {
         public ImageArray(int w, int h)
         {
@@ -33,9 +33,8 @@ namespace SandBoxSFML
             var g = Array[index + 1];
             var b = Array[index + 2];
             var a = Array[index + 3];
-            Color result = new Color(r, g, b, a);
 
-            return result;
+            return new Color(r, g, b, a);
         }
 
         private bool Contains(int x, int y)

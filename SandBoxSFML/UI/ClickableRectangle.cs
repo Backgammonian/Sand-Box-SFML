@@ -6,7 +6,7 @@ using SandBoxSFML.Materials;
 
 namespace SandBoxSFML.UI
 {
-    public class ClickableRectangle : Drawable
+    public sealed class ClickableRectangle : Drawable
     {
         private readonly RectangleShape _rectangleShape;
         private readonly Rectangle _rectangle;
@@ -36,6 +36,7 @@ namespace SandBoxSFML.UI
 
         public Vector2f Position { get; private set; }
         public Vector2f Size { get; private set; }
+        public MaterialType AssignedMaterial { get; private set; }
         public bool IsSelected
         {
             get => _isSelected;
@@ -50,9 +51,6 @@ namespace SandBoxSFML.UI
                 }
             }
         }
-
-        public MaterialType AssignedMaterial { get; private set; }
-
 
         public void Draw(RenderTarget target, RenderStates states)
         {

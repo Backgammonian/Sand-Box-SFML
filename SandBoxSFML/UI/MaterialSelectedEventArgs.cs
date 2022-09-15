@@ -2,13 +2,13 @@
 
 namespace SandBoxSFML.UI
 {
-    public class MaterialSelectedEventArgs
+    public sealed class MaterialSelectedEventArgs
     {
         public MaterialSelectedEventArgs(MaterialType material)
         {
             Material = material;
         }
 
-        public MaterialType Material { get; set; }
+        public MaterialType Material { get; }
     }
 }
