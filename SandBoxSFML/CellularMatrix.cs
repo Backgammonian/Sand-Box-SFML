@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using SandBoxSFML.Materials;
 
 namespace SandBoxSFML
 {
-    public class CellularMatrix
+    public sealed class CellularMatrix
     {
         private readonly Material[,] _matrix;
         private readonly bool[,] _isUpdatedThisFrame;
@@ -31,7 +32,7 @@ namespace SandBoxSFML
             private set => _matrix[i, j] = value;
         }
 
-        public bool IsUpdatedThisFrame(int i, int j)
+        public bool IsCellUpdatedThisFrame(int i, int j)
         {
             return _isUpdatedThisFrame[i, j];
         }
@@ -477,6 +478,9 @@ namespace SandBoxSFML
 
         public void StepAll()
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             for (int j = Height - 1; j >= 0; j--)
             {
                 for (int i = 0; i < Width; i++)
@@ -484,6 +488,9 @@ namespace SandBoxSFML
                     _matrix[i, j].Step(i, j);
                 }
             }
+
+            sw.Stop();
+            Debug.WriteLine(sw.Elapsed);
         }
 
         public void Add(MaterialType type, int i, int j, Vector2 velocity)

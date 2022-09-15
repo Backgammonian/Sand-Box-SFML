@@ -2,6 +2,10 @@
 {
     public enum Direction
     {
-        None, Right, Left, Up, Down
+        None,
+        Right,
+        Left,
+        Up,
+        Down
     }
 }

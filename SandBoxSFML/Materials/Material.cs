@@ -4,7 +4,7 @@ using SFML.Graphics;
 
 namespace SandBoxSFML.Materials
 {
-    public struct Material
+    public sealed class Material
     {
         private readonly List<Point> _trajectory;
 
@@ -22,24 +22,29 @@ namespace SandBoxSFML.Materials
             switch (Type)
             {
                 case MaterialType.Empty:
-                    break;
-
                 case MaterialType.Stone:
-                    break;
-
                 case MaterialType.Wood:
-                    break;
-
                 case MaterialType.Titan:
-                    break;
-
                 case MaterialType.Obsidian:
-                    break;
-
                 case MaterialType.Ice:
+                case MaterialType.Plant:
                     break;
 
-                case MaterialType.Plant:
+                case MaterialType.Ash:
+                case MaterialType.Fire:
+                case MaterialType.Steam:
+                case MaterialType.Ember:
+                case MaterialType.Coal:
+                case MaterialType.Dirt:
+                case MaterialType.Seed:
+                case MaterialType.Virus:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
+                    break;
+
+                case MaterialType.Smoke:
+                    Velocity = new Vector2(0, -Constants.Gravity);
+                    IsMovable = true;
                     break;
 
                 case MaterialType.Sand:
@@ -60,31 +65,6 @@ namespace SandBoxSFML.Materials
                     SpreadRate = Constants.OilSpreadRate;
                     break;
 
-                case MaterialType.Fire:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    break;
-
-                case MaterialType.Steam:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    break;
-
-                case MaterialType.Smoke:
-                    Velocity = new Vector2(0, -Constants.Gravity);
-                    IsMovable = true;
-                    break;
-
-                case MaterialType.Ember:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    break;
-
-                case MaterialType.Coal:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    break;
-
                 case MaterialType.Acid:
                     Velocity = new Vector2(0, Constants.Gravity);
                     IsMovable = true;
@@ -97,36 +77,11 @@ namespace SandBoxSFML.Materials
                     SpreadRate = Constants.LavaSpreadRate;
                     break;
 
-                case MaterialType.Ash:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    break;
-
                 case MaterialType.Methane:
-                    Velocity = new Vector2(0, -Constants.Gravity);
-                    IsMovable = true;
-                    SpreadRate = Constants.MethaneSpreadRate;
-                    break;
-
                 case MaterialType.BurningGas:
                     Velocity = new Vector2(0, -Constants.Gravity);
                     IsMovable = true;
                     SpreadRate = Constants.MethaneSpreadRate;
-                    break;
-
-                case MaterialType.Dirt:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    break;
-
-                case MaterialType.Seed:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    break;
-
-                case MaterialType.Virus:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
                     break;
             }
         }
@@ -148,6 +103,12 @@ namespace SandBoxSFML.Materials
             switch (Type)
             {
                 case MaterialType.Empty:
+                case MaterialType.Stone:
+                case MaterialType.Wood:
+                case MaterialType.Titan:
+                case MaterialType.Obsidian:
+                case MaterialType.Ice:
+                case MaterialType.Plant:
                     Velocity = new Vector2(0, 0);
                     IsMovable = false;
                     SpreadRate = 0;
@@ -171,57 +132,10 @@ namespace SandBoxSFML.Materials
                     SpreadRate = Constants.OilSpreadRate;
                     break;
 
-                case MaterialType.Stone:
-                    Velocity = new Vector2(0, 0);
-                    IsMovable = false;
-                    SpreadRate = 0;
-                    break;
-
-                case MaterialType.Fire:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    break;
-
-                case MaterialType.Steam:
-                    Velocity = new Vector2(0, -Constants.Gravity);
-                    IsMovable = true;
-                    SpreadRate = 0;
-                    break;
-
-                case MaterialType.Smoke:
-                    Velocity = new Vector2(0, -Constants.Gravity);
-                    IsMovable = true;
-                    SpreadRate = 0;
-                    break;
-
-                case MaterialType.Ember:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    SpreadRate = 0;
-                    break;
-
-                case MaterialType.Coal:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    SpreadRate = 0;
-                    break;
-
-                case MaterialType.Wood:
-                    Velocity = new Vector2(0, 0);
-                    IsMovable = false;
-                    SpreadRate = 0;
-                    break;
-
                 case MaterialType.Acid:
                     Velocity = new Vector2(0, Constants.Gravity);
                     IsMovable = true;
                     SpreadRate = Constants.AcidSpreadRate;
-                    break;
-
-                case MaterialType.Titan:
-                    Velocity = new Vector2(0, 0);
-                    IsMovable = false;
-                    SpreadRate = 0;
                     break;
 
                 case MaterialType.Lava:
@@ -230,57 +144,34 @@ namespace SandBoxSFML.Materials
                     SpreadRate = Constants.LavaSpreadRate;
                     break;
 
-                case MaterialType.Obsidian:
-                    Velocity = new Vector2(0, 0);
-                    IsMovable = false;
+                case MaterialType.Fire:
+                case MaterialType.Virus:
+                    Velocity = new Vector2(0, Constants.Gravity);
+                    IsMovable = true;
+                    break;
+
+                case MaterialType.Steam:
+                case MaterialType.Smoke:
+                    Velocity = new Vector2(0, -Constants.Gravity);
+                    IsMovable = true;
                     SpreadRate = 0;
                     break;
 
+                case MaterialType.Ember:
+                case MaterialType.Coal:
                 case MaterialType.Ash:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    SpreadRate = 0;
-                    break;
-
-                case MaterialType.Methane:
-                    Velocity = new Vector2(0, -Constants.Gravity);
-                    IsMovable = true;
-                    SpreadRate = Constants.MethaneSpreadRate;
-                    break;
-
-                case MaterialType.BurningGas:
-                    Velocity = new Vector2(0, -Constants.Gravity);
-                    IsMovable = true;
-                    SpreadRate = Constants.MethaneSpreadRate;
-                    break;
-
-                case MaterialType.Ice:
-                    Velocity = new Vector2(0, 0);
-                    IsMovable = false;
-                    SpreadRate = 0;
-                    break;
-
                 case MaterialType.Dirt:
-                    Velocity = new Vector2(0, Constants.Gravity);
-                    IsMovable = true;
-                    SpreadRate = 0;
-                    break;
-
                 case MaterialType.Seed:
                     Velocity = new Vector2(0, Constants.Gravity);
                     IsMovable = true;
                     SpreadRate = 0;
                     break;
 
-                case MaterialType.Plant:
-                    Velocity = new Vector2(0, 0);
-                    IsMovable = false;
-                    SpreadRate = 0;
-                    break;
-
-                case MaterialType.Virus:
-                    Velocity = new Vector2(0, Constants.Gravity);
+                case MaterialType.Methane:
+                case MaterialType.BurningGas:
+                    Velocity = new Vector2(0, -Constants.Gravity);
                     IsMovable = true;
+                    SpreadRate = Constants.MethaneSpreadRate;
                     break;
             }
         }
@@ -298,7 +189,7 @@ namespace SandBoxSFML.Materials
                 LifeTime = 0;
             }
 
-            if (Matrix.IsUpdatedThisFrame(i, j))
+            if (Matrix.IsCellUpdatedThisFrame(i, j))
             {
                 return;
             }
@@ -531,7 +422,7 @@ namespace SandBoxSFML.Materials
 
         private void UpdateWater(int i, int j)
         {
-            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int _, out int __) &&
+            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out _, out _) &&
                 Utils.RandomValue(0, Constants.PlantGrowthChance) == 0)
             {
                 Matrix.Erase(i, j);
@@ -574,7 +465,6 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            //var spreadRate = Utils.NextBoolean() ? SpreadRate : -SpreadRate;
             var spreadRate = Matrix.IsFree(i + 1, j) || Matrix.IsOil(i + 1, j) || Matrix.IsAcid(i + 1, j) ? SpreadRate : -SpreadRate;
 
             CalculateTrajectory(i, j, i + spreadRate, j + 1);
@@ -681,7 +571,6 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            //var spreadRate = Utils.NextBoolean() ? -SpreadRate : SpreadRate;
             var spreadRate = Matrix.IsFree(i + 1, j) || Matrix.IsAcid(i + 1, j) || Matrix.IsWater(i + 1, j) ? SpreadRate : -SpreadRate;
 
             CalculateTrajectory(i, j, i + spreadRate, j + 1);
@@ -1427,74 +1316,6 @@ namespace SandBoxSFML.Materials
 
         private void UpdateAcid(int i, int j)
         {
-            /*if (Matrix.IsElementNearby(i, j, MaterialType.Water, out int _, out int __) &&
-                Utils.RandomValue(0, Constants.AcidDissolvesInWaterChance) == 0)
-            {
-                Matrix.Erase(i, j);
-                Matrix.Add(MaterialType.Water, i, j);
-
-                return;
-            }
-
-            if (Matrix.IsElementNearby(i, j, MaterialType.Stone, out int iStone, out int jStone) &&
-                Utils.RandomValue(0, Constants.AcidMeltsStoneChance) == 0)
-            {
-                Matrix.Erase(iStone, jStone);
-                Matrix.Swap(i, j, iStone, jStone);
-            }
-
-            if (Matrix.IsElementNearby(i, j, MaterialType.Wood, out int iWood, out int jWood) &&
-                Utils.RandomValue(0, Constants.AcidMeltsWoodChance) == 0)
-            {
-                Matrix.Erase(iWood, jWood);
-                Matrix.Swap(i, j, iWood, jWood);
-            }
-
-            if (Matrix.IsElementNearby(i, j, MaterialType.Dirt, out int iDirt, out int jDirt) &&
-                Utils.RandomValue(0, Constants.AcidMakesSandFromDirtChance) == 0)
-            {
-                Matrix.Erase(iDirt, jDirt);
-                Matrix.Add(MaterialType.Sand, iDirt, jDirt);
-                Matrix.Swap(i, j, iDirt, jDirt);
-            }
-
-            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iPlant, out int jPlant) &&
-                Utils.RandomValue(0, Constants.AcidMeltsPlantChance) == 0)
-            {
-                Matrix.Erase(iPlant, jPlant);
-                Matrix.Swap(i, j, iPlant, jPlant);
-            }
-
-            if (Matrix.IsElementNearby(i, j, MaterialType.Ash, out int iAsh, out int jAsh) &&
-                Utils.RandomValue(0, Constants.AcidMeltsAshChance) == 0)
-            {
-                Matrix.Erase(iAsh, jAsh);
-                Matrix.Swap(i, j, iAsh, jAsh);
-            }
-
-            if (Matrix.IsElementNearby(i, j, MaterialType.Obsidian, out int iObsidian, out int jObsidian) &&
-                Utils.RandomValue(0, Constants.AcidMeltsObsidianChance) == 0)
-            {
-                Matrix.Erase(iObsidian, jObsidian);
-                Matrix.Swap(i, j, iObsidian, jObsidian);
-            }
-
-            if (Matrix.IsElementNearby(i, j, MaterialType.Ice, out int iIce, out int jIce) &&
-                Utils.RandomValue(0, Constants.AcidMeltsIceChance) == 0)
-            {
-                Matrix.Erase(iIce, jIce);
-                Matrix.Add(MaterialType.Water, iIce, jIce);
-                Matrix.Swap(i, j, iIce, jIce);
-            }
-
-            if (Matrix.IsElementNearby(i, j, MaterialType.Oil, out int iOil, out int jOil) &&
-                Utils.RandomValue(0, Constants.AcidReactsWithOilChance) == 0)
-            {
-                Matrix.Erase(iOil, jOil);
-                Matrix.Add(MaterialType.Coal, iOil, jOil);
-                Matrix.Swap(i, j, iOil, jOil);
-            }*/
-
             var vX = (int)(i + Velocity.X);
             var vY = (int)(j + Velocity.Y);
 
@@ -1528,7 +1349,6 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            //var spreadRate = Utils.NextBoolean() ? -SpreadRate : SpreadRate;
             var spreadRate = Matrix.IsFree(i + 1, j) || Matrix.IsOil(i + 1, j) || Matrix.IsWater(i + 1, j) ? SpreadRate : -SpreadRate;
 
             CalculateTrajectory(i, j, i + spreadRate, j + 1);
@@ -1587,7 +1407,7 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            if (Matrix.IsElementNearby(i, j, MaterialType.Water, out int _, out int __) &&
+            if (Matrix.IsElementNearby(i, j, MaterialType.Water, out _, out _) &&
                 Utils.RandomValue(0, Constants.AcidDissolvesInWaterChance) == 0)
             {
                 Matrix.Erase(i, j);
@@ -2468,7 +2288,7 @@ namespace SandBoxSFML.Materials
 
         private void UpdateSeed(int i, int j)
         {
-            if (Matrix.IsElementNearby(i, j, MaterialType.Dirt, out int iNew, out int jNew) &&
+            if (Matrix.IsElementNearby(i, j, MaterialType.Dirt, out _, out _) &&
                 Utils.RandomValue(0, Constants.PlantGrowthChance) == 0)
             {
                 Matrix.Erase(i, j);
@@ -2477,7 +2297,7 @@ namespace SandBoxSFML.Materials
                 return;
             }
 
-            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out int iNew2, out int jNew2) &&
+            if (Matrix.IsElementNearby(i, j, MaterialType.Plant, out _, out _) &&
                 Utils.RandomValue(0, Constants.PlantGrowthChance) == 0)
             {
                 Matrix.Erase(i, j);

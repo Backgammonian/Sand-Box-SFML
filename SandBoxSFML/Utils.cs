@@ -36,7 +36,7 @@ namespace SandBoxSFML
 
         public static bool NextBoolean()
         {
-            return _r.Next() > (Int32.MaxValue / 2);
+            return _r.Next() > (int.MaxValue / 2);
         }
 
         public static Color InvertColor(Color color)

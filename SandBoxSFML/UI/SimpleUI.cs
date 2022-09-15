@@ -7,27 +7,26 @@ using SandBoxSFML.Materials;
 
 namespace SandBoxSFML.UI
 {
-    public class SimpleUI : Drawable
+    public sealed class SimpleUI : Drawable
     {
+        private const int _controlButtonWidth = 70;
+        private const int _controlButtonHeight = 30;
+        private const int _buttonWidth = 70;
+        private const int _buttonHeight = 30;
+
         private readonly Font _font;
         private readonly ClickableRectangle _main;
         private readonly List<ClickableRectangle> _materialButtons;
         private readonly List<Text> _materialIcons;
-        private int? _selectedButtonIndex;
-        private int? _previousButtonIndex;
-        private const int _buttonWidth = 70;
-        private const int _buttonHeight = 30;
-        private readonly Text _materialPreview;
-
         private readonly ClickableRectangle _controlsMenu;
         private readonly List<ClickableRectangle> _controlsButtons;
         private readonly List<Text> _controlsLabels;
-        private int? _selectedControlIndex;
-        private const int _controlButtonWidth = 70;
-        private const int _controlButtonHeight = 30;
-        private readonly Text _controlText;
-
         private readonly CircleShape _circleShape;
+        private readonly Text _materialPreview;
+        private readonly Text _controlText;
+        private int? _selectedButtonIndex;
+        private int? _previousButtonIndex;
+        private int? _selectedControlIndex;
         private float _selectionRadius;
         private MaterialType _selectedMaterial;
         
@@ -116,7 +115,6 @@ namespace SandBoxSFML.UI
 
         public event EventHandler<EventArgs> MaterialChanged;
         public event EventHandler<EventArgs> SelectionRadiusChanged;
-
         public event EventHandler<EventArgs> ResumeSelected;
         public event EventHandler<EventArgs> PauseSelected;
         public event EventHandler<EventArgs> ClearSelected;
@@ -161,8 +159,7 @@ namespace SandBoxSFML.UI
             var y = Position.Y + (_materialButtons.Count + 1) * 5 + _buttonHeight * _materialButtons.Count;
             var position = new Vector2f(x, y);
 
-            _materialButtons.Add(new ClickableRectangle(
-                position,
+            _materialButtons.Add(new ClickableRectangle(position,
                 new Vector2f(_buttonWidth, _buttonHeight),
                 MaterialColor.GetColor(material, 0),
                 material));
@@ -186,8 +183,7 @@ namespace SandBoxSFML.UI
             var y = ControlsPosition.Y + (_controlsButtons.Count + 1) * 5 + _controlButtonHeight * _controlsButtons.Count;
             var position = new Vector2f(x, y);
 
-            _controlsButtons.Add(new ClickableRectangle(
-                position,
+            _controlsButtons.Add(new ClickableRectangle(position,
                 new Vector2f(_controlButtonWidth, _controlButtonHeight),
                 new Color(120, 120, 120)));
 
@@ -355,22 +351,22 @@ namespace SandBoxSFML.UI
 
             if (buttonIndex.HasValue)
             {
-                _materialPreview.DisplayedString = _materialButtons[buttonIndex.Value].AssignedMaterial + "";
+                _materialPreview.DisplayedString = _materialButtons[buttonIndex.Value].AssignedMaterial + string.Empty;
             }
             else
             {
-                _materialPreview.DisplayedString = "";
+                _materialPreview.DisplayedString = string.Empty;
             }
         }
 
         public void ToggleControlText(bool isSimulating)
         {
-            _controlText.DisplayedString = isSimulating ? "" : "Paused";
+            _controlText.DisplayedString = isSimulating ? string.Empty : "Paused";
         }
 
         private void OnResumeSelected(object sender, MaterialSelectedEventArgs e)
         {
-            _controlText.DisplayedString = "";
+            _controlText.DisplayedString = string.Empty;
 
             ResumeSelected?.Invoke(this, EventArgs.Empty);
         }

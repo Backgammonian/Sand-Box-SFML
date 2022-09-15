@@ -5,6 +5,7 @@ namespace SandBoxSFML
     public static class ArrayExtensions
     {
         // Inspired from several Stack Overflow discussions and an implementation by David Walker at http://coding.grax.com/2011/11/initialize-array-to-value-in-c-very.html
+
         public static void Fill<T>(this T[] destinationArray, params T[] value)
         {
             if (destinationArray == null)

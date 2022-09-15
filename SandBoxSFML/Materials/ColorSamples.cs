@@ -3,7 +3,7 @@ using SFML.Graphics;
 
 namespace SandBoxSFML.Materials
 {
-    public class ColorSamples
+    public sealed class ColorSamples
     {
         private readonly List<Color> _colors;
 

@@ -34,8 +34,7 @@ namespace SandBoxSFML
             _isSimulating = true;
 
             var font = new Font(Properties.Resources.Minecraft);
-            _ui = new SimpleUI(
-                new Vector2f(5, 25), 
+            _ui = new SimpleUI(new Vector2f(5, 25), 
                 new Vector2f(80, 670), 
                 new Color(255, 255, 255, 50), 
                 font, 
@@ -43,6 +42,7 @@ namespace SandBoxSFML
                 new Vector2f(715, 25), 
                 new Vector2f(80, 180),
                 new Vector2f(715, 5));
+            //yeah, magic numbers
 
             _ui.MaterialChanged += OnUIMaterialChanged;
             _ui.SelectionRadiusChanged += OnUISelectionRadiusChanged;
@@ -104,10 +104,8 @@ namespace SandBoxSFML
 
                 if (_ticks % 20 == 0)
                 {
-                    var title = string.Format("{0} (FPS: {1} | {2} ms per frame)", 
-                        _appName, 
-                        _world.FPS, 
-                        (Math.Round(_delta * 1000, 2) + "").Replace(',', '.'));
+                    var milliseconds = (Math.Round(_delta * 1000, 2) + "").Replace(',', '.');
+                    var title = $"{_appName} (FPS: {_world.FPS} | {milliseconds} ms per frame)";
                     Window.SetTitle(title);
                 }
             }
@@ -200,7 +198,7 @@ namespace SandBoxSFML
                 FileName = "world",
                 DefaultExt = ".png",
                 ValidateNames = true,
-                Filter = string.Format("{1} files (*{0})|*{0}|All files (*.*)|*.*", ".png", "PNG")
+                Filter = "PNG files (*.png)|*.png|All files (*.*)|*.*"
             };
 
             if (saveFile.ShowDialog() != DialogResult.OK)
@@ -216,21 +214,18 @@ namespace SandBoxSFML
                 {
                     for (int j = 0; j < matrix.GetLength(1); j++)
                     {
-                        var color = MaterialColor.GetFirstColor(matrix[i, j]);
+                        var color = MaterialColor.GetFirstTone(matrix[i, j]);
                         builder.SetPixel(new Pixel(color.R, color.G, color.B, color.A, false), i, j);
                     }
                 }
 
                 using var saveFileStream = File.OpenWrite(saveFile.FileName);
                 builder.Save(saveFileStream);
-
-                saveFileStream.Close();
-                saveFileStream.Dispose();
             }
             catch (Exception)
             {
                 MessageBox.Show(
-                    "Unable to save field to image",
+                    "Unable to save a field to image",
                     "Save error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -241,7 +236,7 @@ namespace SandBoxSFML
         {
             _ui.UnselectControls();
 
-            OpenFileDialog openFile = new OpenFileDialog();
+            var openFile = new OpenFileDialog();
             if (openFile.ShowDialog() != DialogResult.OK)
             {
                 return;
@@ -281,7 +276,7 @@ namespace SandBoxSFML
                 if (!image.HasAlphaChannel)
                 {
                     MessageBox.Show(
-                        "Input image should have alpha channel!",
+                        "Input image should have alpha channel (transparency)!",
                         "Load error",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
