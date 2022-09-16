@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using SandBoxSFML.Materials;
 
 namespace SandBoxSFML
@@ -48,7 +47,7 @@ namespace SandBoxSFML
             {
                 for (int j = 0; j < Height; j++)
                 {
-                    _matrix[i, j] = new Material(this, MaterialType.Empty);
+                    this[i, j] = new Material(this, MaterialType.Empty);
                     _isUpdatedThisFrame[i, j] = false;
                 }
             }
@@ -60,7 +59,7 @@ namespace SandBoxSFML
             {
                 for (int j = 0; j < Height; j++)
                 {
-                    _matrix[i, j].ChangeType(MaterialType.Empty);
+                    this[i, j].ChangeType(MaterialType.Empty);
                     _isUpdatedThisFrame[i, j] = false;
                 }
             }
@@ -73,71 +72,71 @@ namespace SandBoxSFML
 
         public bool IsFree(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Empty;
+            return IsWithihBounds(i, j) && this[i, j].Type == MaterialType.Empty;
         }
 
         public bool IsOccupied(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type != MaterialType.Empty;
+            return IsWithihBounds(i, j) && this[i, j].Type != MaterialType.Empty;
         }
 
         public bool IsWater(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Water;
+            return IsWithihBounds(i, j) && this[i, j].Type == MaterialType.Water;
         }
 
         public bool IsFire(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Fire;
+            return IsWithihBounds(i, j) && this[i, j].Type == MaterialType.Fire;
         }
 
         public bool IsSmoke(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Smoke;
+            return IsWithihBounds(i, j) && this[i, j].Type == MaterialType.Smoke;
         }
 
         public bool IsSteam(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Steam;
+            return IsWithihBounds(i, j) && this[i, j].Type == MaterialType.Steam;
         }
 
         public bool IsOil(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Oil;
+            return IsWithihBounds(i, j) && this[i, j].Type == MaterialType.Oil;
         }
 
         public bool IsAcid(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Acid;
+            return IsWithihBounds(i, j) && this[i, j].Type == MaterialType.Acid;
         }
 
         public bool IsLava(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Lava;
+            return IsWithihBounds(i, j) && this[i, j].Type == MaterialType.Lava;
         }
 
         public bool IsAsh(int i, int j)
         {
-            return IsWithihBounds(i, j) && _matrix[i, j].Type == MaterialType.Ash;
+            return IsWithihBounds(i, j) && this[i, j].Type == MaterialType.Ash;
         }
 
         public bool IsLiquid(int i, int j)
         {
             return IsWithihBounds(i, j) && 
-                (_matrix[i, j].Type == MaterialType.Water ||
-                _matrix[i, j].Type == MaterialType.Oil || 
-                _matrix[i, j].Type == MaterialType.Acid);
+                (this[i, j].Type == MaterialType.Water ||
+                this[i, j].Type == MaterialType.Oil ||
+                this[i, j].Type == MaterialType.Acid);
         }
 
         public bool IsMovableSolid(int i, int j)
         {
             return IsWithihBounds(i, j) && 
-                (_matrix[i, j].Type == MaterialType.Sand ||
-                _matrix[i, j].Type == MaterialType.Coal ||
-                _matrix[i, j].Type == MaterialType.Ash ||
-                _matrix[i, j].Type == MaterialType.Ember ||
-                _matrix[i, j].Type == MaterialType.Fire ||
-                _matrix[i, j].Type == MaterialType.Virus);
+                (this[i, j].Type == MaterialType.Sand ||
+                this[i, j].Type == MaterialType.Coal ||
+                this[i, j].Type == MaterialType.Ash ||
+                this[i, j].Type == MaterialType.Ember ||
+                this[i, j].Type == MaterialType.Fire ||
+                this[i, j].Type == MaterialType.Virus);
         }
 
         public bool IsLiquidNearby(int i, int j, out int iNew, out int jNew)
@@ -220,7 +219,7 @@ namespace SandBoxSFML
             var h = Utils.NextBoolean() ? 1 : -1;
             var v = Utils.NextBoolean() ? -1 : 1;
 
-            if (IsWithihBounds(i + h, j + v) && _matrix[i + h, j + v].Type == type)
+            if (IsWithihBounds(i + h, j + v) && this[i + h, j + v].Type == type)
             {
                 iNew = i + h;
                 jNew = j + v;
@@ -228,7 +227,7 @@ namespace SandBoxSFML
                 return true;
             }
 
-            if (IsWithihBounds(i - h, j - v) && _matrix[i - h, j - v].Type == type)
+            if (IsWithihBounds(i - h, j - v) && this[i - h, j - v].Type == type)
             {
                 iNew = i - h;
                 jNew = j - v;
@@ -236,7 +235,7 @@ namespace SandBoxSFML
                 return true;
             }
 
-            if (IsWithihBounds(i + h, j - v) && _matrix[i + h, j - v].Type == type)
+            if (IsWithihBounds(i + h, j - v) && this[i + h, j - v].Type == type)
             {
                 iNew = i + h;
                 jNew = j - v;
@@ -244,7 +243,7 @@ namespace SandBoxSFML
                 return true;
             }
 
-            if (IsWithihBounds(i - h, j + v) && _matrix[i - h, j + v].Type == type)
+            if (IsWithihBounds(i - h, j + v) && this[i - h, j + v].Type == type)
             {
                 iNew = i - h;
                 jNew = j + v;
@@ -252,7 +251,7 @@ namespace SandBoxSFML
                 return true;
             }
 
-            if (IsWithihBounds(i + h, j) && _matrix[i + h, j].Type == type)
+            if (IsWithihBounds(i + h, j) && this[i + h, j].Type == type)
             {
                 iNew = i + h;
                 jNew = j;
@@ -260,7 +259,7 @@ namespace SandBoxSFML
                 return true;
             }
 
-            if (IsWithihBounds(i, j + v) && _matrix[i, j + v].Type == type)
+            if (IsWithihBounds(i, j + v) && this[i, j + v].Type == type)
             {
                 iNew = i;
                 jNew = j + v;
@@ -268,7 +267,7 @@ namespace SandBoxSFML
                 return true;
             }
 
-            if (IsWithihBounds(i - h, j) && _matrix[i - h, j].Type == type)
+            if (IsWithihBounds(i - h, j) && this[i - h, j].Type == type)
             {
                 iNew = i - h;
                 jNew = j;
@@ -276,7 +275,7 @@ namespace SandBoxSFML
                 return true;
             }
 
-            if (IsWithihBounds(i, j - v) && _matrix[i, j - v].Type == type)
+            if (IsWithihBounds(i, j - v) && this[i, j - v].Type == type)
             {
                 iNew = i;
                 jNew = j - v;
@@ -370,42 +369,42 @@ namespace SandBoxSFML
             var h = Utils.NextBoolean() ? -1 : 1;
             var v = Utils.NextBoolean() ? -1 : 1;
 
-            if (IsWithihBounds(i + h, j + v) && _matrix[i + h, j + v].Type == MaterialType.Empty)
+            if (IsWithihBounds(i + h, j + v) && this[i + h, j + v].Type == MaterialType.Empty)
             {
                 return false;
             }
 
-            if (IsWithihBounds(i - h, j - v) && _matrix[i - h, j - v].Type == MaterialType.Empty)
+            if (IsWithihBounds(i - h, j - v) && this[i - h, j - v].Type == MaterialType.Empty)
             {
                 return false;
             }
 
-            if (IsWithihBounds(i + h, j - v) && _matrix[i + h, j - v].Type == MaterialType.Empty)
+            if (IsWithihBounds(i + h, j - v) && this[i + h, j - v].Type == MaterialType.Empty)
             {
                 return false;
             }
 
-            if (IsWithihBounds(i - h, j + v) && _matrix[i - h, j + v].Type == MaterialType.Empty)
+            if (IsWithihBounds(i - h, j + v) && this[i - h, j + v].Type == MaterialType.Empty)
             {
                 return false;
             }
 
-            if (IsWithihBounds(i + h, j) && _matrix[i + h, j].Type == MaterialType.Empty)
+            if (IsWithihBounds(i + h, j) && this[i + h, j].Type == MaterialType.Empty)
             {
                 return false;
             }
 
-            if (IsWithihBounds(i, j + v) && _matrix[i, j + v].Type == MaterialType.Empty)
+            if (IsWithihBounds(i, j + v) && this[i, j + v].Type == MaterialType.Empty)
             {
                 return false;
             }
 
-            if (IsWithihBounds(i - h, j) && _matrix[i - h, j].Type == MaterialType.Empty)
+            if (IsWithihBounds(i - h, j) && this[i - h, j].Type == MaterialType.Empty)
             {
                 return false;
             }
 
-            if (IsWithihBounds(i, j - v) && _matrix[i, j - v].Type == MaterialType.Empty)
+            if (IsWithihBounds(i, j - v) && this[i, j - v].Type == MaterialType.Empty)
             {
                 return false;
             }
@@ -420,42 +419,42 @@ namespace SandBoxSFML
             var h = Utils.NextBoolean() ? -1 : 1;
             var v = Utils.NextBoolean() ? -1 : 1;
 
-            if (IsWithihBounds(i + h, j + v) && _matrix[i + h, j + v].Type == type)
+            if (IsWithihBounds(i + h, j + v) && this[i + h, j + v].Type == type)
             {
                 count += 1;
             }
 
-            if (IsWithihBounds(i - h, j - v) && _matrix[i - h, j - v].Type == type)
+            if (IsWithihBounds(i - h, j - v) && this[i - h, j - v].Type == type)
             {
                 count += 1;
             }
 
-            if (IsWithihBounds(i + h, j - v) && _matrix[i + h, j - v].Type == type)
+            if (IsWithihBounds(i + h, j - v) && this[i + h, j - v].Type == type)
             {
                 count += 1;
             }
 
-            if (IsWithihBounds(i - h, j + v) && _matrix[i - h, j + v].Type == type)
+            if (IsWithihBounds(i - h, j + v) && this[i - h, j + v].Type == type)
             {
                 count += 1;
             }
 
-            if (IsWithihBounds(i + h, j) && _matrix[i + h, j].Type == type)
+            if (IsWithihBounds(i + h, j) && this[i + h, j].Type == type)
             {
                 count += 1;
             }
 
-            if (IsWithihBounds(i, j + v) && _matrix[i, j + v].Type == type)
+            if (IsWithihBounds(i, j + v) && this[i, j + v].Type == type)
             {
                 count += 1;
             }
 
-            if (IsWithihBounds(i - h, j) && _matrix[i - h, j].Type == type)
+            if (IsWithihBounds(i - h, j) && this[i - h, j].Type == type)
             {
                 count += 1;
             }
 
-            if (IsWithihBounds(i, j - v) && _matrix[i, j - v].Type == type)
+            if (IsWithihBounds(i, j - v) && this[i, j - v].Type == type)
             {
                 count += 1;
             }
@@ -465,32 +464,26 @@ namespace SandBoxSFML
 
         public void Swap(int i1, int j1, int i2, int j2)
         {
-            var t = _matrix[i1, j1];
-            _matrix[i1, j1] = _matrix[i2, j2];
-            _matrix[i2, j2] = t;
+            var t = this[i1, j1];
+            this[i1, j1] = this[i2, j2];
+            this[i2, j2] = t;
 
             _isUpdatedThisFrame[i1, j1] = true;
             _isUpdatedThisFrame[i2, j2] = true;
 
-            MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i1, j1, _matrix[i1, j1].Color));
-            MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i2, j2, _matrix[i2, j2].Color));
+            MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i1, j1, this[i1, j1].Color));
+            MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i2, j2, this[i2, j2].Color));
         }
 
         public void StepAll()
         {
-            var sw = new Stopwatch();
-            sw.Start();
-
             for (int j = Height - 1; j >= 0; j--)
             {
                 for (int i = 0; i < Width; i++)
                 {
-                    _matrix[i, j].Step(i, j);
+                    this[i, j].Step(i, j);
                 }
             }
-
-            sw.Stop();
-            Debug.WriteLine(sw.Elapsed);
         }
 
         public void Add(MaterialType type, int i, int j, Vector2 velocity)
@@ -502,11 +495,11 @@ namespace SandBoxSFML
 
             if (IsFree(i, j))
             {
-                _matrix[i, j].ChangeType(type);
-                _matrix[i, j].Velocity.X = velocity.X;
-                _matrix[i, j].Velocity.Y = velocity.Y;
+                this[i, j].ChangeType(type);
+                this[i, j].Velocity.X = velocity.X;
+                this[i, j].Velocity.Y = velocity.Y;
 
-                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, _matrix[i, j].Color));
+                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, this[i, j].Color));
             }
         }
 
@@ -519,11 +512,11 @@ namespace SandBoxSFML
 
             if (IsFree(i, j))
             {
-                _matrix[i, j].ChangeType(type);
-                _matrix[i, j].Velocity.X = 0;
-                _matrix[i, j].Velocity.Y = 0;
+                this[i, j].ChangeType(type);
+                this[i, j].Velocity.X = 0;
+                this[i, j].Velocity.Y = 0;
 
-                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, _matrix[i, j].Color));
+                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, this[i, j].Color));
             }
         }
 
@@ -531,9 +524,9 @@ namespace SandBoxSFML
         {
             if (IsWithihBounds(i, j))
             {
-                _matrix[i, j].ChangeType(MaterialType.Empty);
+                this[i, j].ChangeType(MaterialType.Empty);
 
-                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, _matrix[i, j].Color));
+                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, this[i, j].Color));
             }
         }
 
@@ -541,9 +534,9 @@ namespace SandBoxSFML
         {
             if (IsWithihBounds(i, j))
             {
-                _matrix[i, j].ChangeType(type);
+                this[i, j].ChangeType(type);
 
-                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, _matrix[i, j].Color));
+                MatrixUpdated?.Invoke(this, new MatrixUpdatedEventArgs(i, j, this[i, j].Color));
             }
         }
 
@@ -559,7 +552,7 @@ namespace SandBoxSFML
             {
                 for (int j = 0; j < Height; j++)
                 {
-                    result[i, j] = _matrix[i, j].Type;
+                    result[i, j] = this[i, j].Type;
                 }
             }
 
